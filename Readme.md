@@ -3,3 +3,4 @@
 ## Integrantes
 
 - Nelson Ivan Castellanos Betancourt (necastellanosb)
+- Nicolás Zuluaga Galindo (nzuluga)
