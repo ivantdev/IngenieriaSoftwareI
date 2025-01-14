@@ -9,9 +9,11 @@ import "@/styles/PreRegistration.css"
 function PreRegistration() {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({ patient: {} });
+    
     const nextStep = () => {
         setStep(step + 1);
     }
+    
     const forms = [
         <PatientForm key="patient-form" formData={formData} updateFormData={setFormData} nextStep={nextStep} />,
         <ThirdPartyForm key="third-party-form" formData={formData} updateFormData={setFormData} nextStep={nextStep} />,

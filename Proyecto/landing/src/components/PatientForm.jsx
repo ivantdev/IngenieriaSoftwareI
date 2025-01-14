@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { useToast } from '@/hooks/useToast';
+import ToastContainer from "@/components/ToastContainer";
 import { validateField } from '@/utils';
 
 const validations = {
@@ -47,26 +49,33 @@ const validations = {
 };
 
 function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
+    const { toasts, addToast, removeToast } = useToast();
     const clickButton = (e) => {
         e.preventDefault();
 
-        const validationResults = {};
+        const validationResults = [];
         let isValid = true;
 
         Object.keys(validations).forEach((field) => {
             const input = document.querySelector(`[name="${field}"]`);
             const value = input ? input.value : '';
             const validation = validateField(validations, field, value);
-            console.log("Validación de", field, validation);
 
             if (!validation.isValid) {
                 isValid = false;
-                validationResults[field] = validation.message;
+                validationResults.push(validation.message);
             }
         });
 
         if (!isValid) {
-            console.log("Errores de validación:", validationResults);
+            validationResults.forEach((message) => {
+                addToast(
+                    message,
+                    {
+                        type: 'error',
+                    }
+                );
+            })
         } else {
             updateFormData({
                 ...formData,
@@ -91,6 +100,9 @@ function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
 
     return (
         <form className="stepform__container">
+
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
+
             <div>
                 <h2>Información personal del paciente</h2>
                 <div className="field">

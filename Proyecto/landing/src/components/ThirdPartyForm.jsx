@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { validateField } from '@/utils';
+import { useToast } from '@/hooks/useToast';
+import ToastContainer from "@/components/ToastContainer";
 
 const validations = {
     first_name: {
@@ -32,11 +34,12 @@ const validations = {
 
 function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }) {
     const [isThirdParty, setIsThirdParty] = useState(true);
+    const { toasts, addToast, removeToast } = useToast();
 
     const clickButton = (e) => {
         e.preventDefault();
 
-        const validationResults = {};
+        const validationResults = [];
         let isValid = true;
 
         const is_third_party = document.querySelector('[name="is_third_party"]').checked;
@@ -46,18 +49,24 @@ function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }
                 const input = document.querySelector(`[name="${field}"]`);
                 const value = input ? input.value : '';
                 const validation = validateField(validations, field, value);
-                console.log("Validación de", field, validation);
     
                 if (!validation.isValid) {
                     isValid = false;
-                    validationResults[field] = validation.message;
+                    validationResults.push(validation.message);
                 }
             });
         }
 
 
         if (!isValid) {
-            console.log("Errores de validación:", validationResults);
+            validationResults.forEach((message) => {
+                addToast(
+                    message,
+                    {
+                        type: 'error',
+                    }
+                );
+            })
         } else {
             updateFormData({
                 ...formData,
@@ -71,6 +80,9 @@ function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }
 
     return (
         <form className="stepform__container">
+
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
+
             <div>
                 <div className='field checkbox'>
                     <input

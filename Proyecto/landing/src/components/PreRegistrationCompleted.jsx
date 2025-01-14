@@ -1,13 +1,33 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useToast } from '@/hooks/useToast';
+import ToastContainer from "@/components/ToastContainer";
+
 
 function PreRegistrationCompleted({ formData }) {
-    if (formData.status !== "success") {
-        // TODO: toast error
-        return null;
+    const [isReady, setIsReady] = useState(false);
+    const { toasts, addToast, removeToast } = useToast();
+
+    useEffect(() => {
+        if (formData?.status !== "success") {
+            addToast("Error al cargar la información del pre-registro", { type: "error" });
+        } else {
+            setIsReady(true);
+        }
+    }, [formData, addToast]);
+
+    if (!isReady) {
+        return (
+            <div className="stepform__container">
+                <h3>Cargando información...</h3>
+            </div>
+        );
     }
 
     return (
         <div className="stepform__container competed__form">
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
+
             <div>
                 <h2>Referencia de pre-registro: <span className="bold">{formData.data.reference_code}</span></h2>
                 <div className="completed__form-image">
