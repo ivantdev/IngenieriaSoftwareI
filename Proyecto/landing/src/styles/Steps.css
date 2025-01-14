@@ -1,0 +1,46 @@
+.steps {
+    width: max-content;
+    position: relative;
+    display: flex;
+    gap: 30px;
+}
+
+.steps__line {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.steps__line div {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px solid #DEDEDE;
+}
+
+.steps__item {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #DEDEDE;
+}
+
+.steps__item.completed {
+    background-color: #38BB47;
+}
+
+.steps__item-center {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+.steps__item-center.completed {
+    background-color: #DEDEDE;
+}
