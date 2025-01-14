@@ -29,10 +29,15 @@ const validations = {
         pattern: /^\+?[0-9]{10,13}$/,
         message: "El número de teléfono debe ser válido.",
     },
-
+    relationship: {
+        fieldName: "Relación con el paciente",
+        required: true,
+        pattern: /^(parent|sibling|child|grandparent|other_family|legal_guardian|caregiver|health_professional|friend|neighbor|no_relationship|other)$/,
+        message: "Seleccione una opción valida en el campo relación con el paciente.",
+    },
 };
 
-function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }) {
+function ThirdPartyForm({ formData = { patient: {}, }, updateFormData, nextStep }) {
     const [isThirdParty, setIsThirdParty] = useState(true);
     const { toasts, addToast, removeToast } = useToast();
 
@@ -105,7 +110,7 @@ function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }
                             id="first_name"
                             name="first_name"
                             placeholder="Juan"
-                            defaultValue={formData.patient.first_name || ''}
+                            defaultValue={formData.third_party.first_name || ''}
                         />
                     </div>
                     <div className="field">
@@ -115,7 +120,7 @@ function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }
                             id="last_name"
                             name="last_name"
                             placeholder="Pérez"
-                            defaultValue={formData.patient.last_name || ''}
+                            defaultValue={formData.third_party.last_name || ''}
                         />
                     </div>
                     <div className="field">
@@ -125,7 +130,7 @@ function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }
                             id="contact_number"
                             name="contact_number"
                             placeholder="+57 313 456 7890"
-                            defaultValue={formData.patient.contact_number || ''}
+                            defaultValue={formData.third_party.contact_number || ''}
                         />
                     </div>
                     <div className="field">
@@ -135,11 +140,11 @@ function ThirdPartyForm({ formData = { patient: {} }, updateFormData, nextStep }
                             id="email"
                             name="email"
                             placeholder="juanperez@gmail.com"
-                            defaultValue={formData.patient.email || ''}
+                            defaultValue={formData.third_party.email || ''}
                         />
                     </div>
                     <div className="field">
-                        <label htmlFor="relationship">Tipo de identificación</label>
+                        <label htmlFor="relationship">Relación con el paciente</label>
                         <select name="relationship" id="relationship" required>
                             <option value="">Seleccione una opción</option>
                             <option value="parent">Padre/Madre</option>

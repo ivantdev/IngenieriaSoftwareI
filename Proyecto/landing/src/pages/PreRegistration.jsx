@@ -10,7 +10,7 @@ import "@/styles/PreRegistration.css"
 
 function PreRegistration() {
     const [step, setStep] = useState(0);
-    const [formData, setFormData] = useState({ patient: {} });
+    const [formData, setFormData] = useState({ patient: {}, medical_info: {}, third_party: {} });
     const { toasts, addToast, removeToast } = useToast();
     const endpoint = import.meta.env.VITE_API_ENDPOINT;
     
