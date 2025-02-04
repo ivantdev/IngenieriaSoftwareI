@@ -36,13 +36,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"first_name": "First name must be at least 2 characters long"}
             )
-        
+
         last_name = data.get("last_name")
         if not last_name or len(last_name) < 2:
             raise serializers.ValidationError(
                 {"last_name": "First name must be at least 2 characters long"}
             )
-        
+
         email = data.get("email")
         if not email:
             raise serializers.ValidationError({"email": "Email is required"})

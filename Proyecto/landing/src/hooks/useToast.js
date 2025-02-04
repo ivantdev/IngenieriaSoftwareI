@@ -4,7 +4,7 @@ export const useToast = () => {
   const [toasts, setToasts] = useState([]);
 
   const addToast = useCallback((message, options = {}) => {
-    const id = crypto.randomUUID();;
+    const id = crypto.randomUUID();
     const newToast = {
       id,
       message,
