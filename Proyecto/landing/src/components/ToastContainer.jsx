@@ -6,6 +6,8 @@ const ToastContainer = ({ toasts, removeToast }) => {
       {toasts.map((toast) => (
         <div
           key={toast.id}
+          role="alert"
+          tabIndex={0}
           style={{
             ...styles.toast,
             ...toast.style,
@@ -15,6 +17,11 @@ const ToastContainer = ({ toasts, removeToast }) => {
             ...(toast.type === "info" && styles.info),
           }}
           onClick={() => removeToast(toast.id)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              removeToast(toast.id);
+            }
+          }}
         >
           {toast.message}
         </div>
@@ -31,7 +38,7 @@ ToastContainer.propTypes = {
       duration: PropTypes.number,
       type: PropTypes.string,
       style: PropTypes.object,
-    })
+    }),
   ).isRequired,
   removeToast: PropTypes.func.isRequired,
 };
@@ -57,10 +64,10 @@ const styles = {
     transition: "opacity 0.3s ease-in-out",
     opacity: 1,
   },
-  success: { backgroundColor: "white" ,color: "#4caf50" },
-  error: { backgroundColor: "white" ,color: "#f44336" },
-  warning: { backgroundColor: "white" ,color: "#ff9800" },
-  info: { backgroundColor: "white" ,color: "#2196f3" },
+  success: { backgroundColor: "white", color: "#4caf50" },
+  error: { backgroundColor: "white", color: "#f44336" },
+  warning: { backgroundColor: "white", color: "#ff9800" },
+  info: { backgroundColor: "white", color: "#2196f3" },
 };
 
 export default ToastContainer;
