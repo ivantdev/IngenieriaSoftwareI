@@ -37,9 +37,7 @@ class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
         third_party_data = validated_data.pop("third_party")
 
         patient = Patient.objects.create(**patient_data)
-        medical_info = PreRegistrationMedicalInfo.objects.create(
-            patient=patient, **medical_info_data
-        )
+        medical_info = PreRegistrationMedicalInfo.objects.create(**medical_info_data)
         third_party = ThirdParty.objects.create(patient=patient, **third_party_data)
 
         pre_registration = PreRegistration.objects.create(
