@@ -62,3 +62,24 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
+
+  consumer-flake8:
+    name: Run Flake8 on Consumer
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.11.10
+    defaults:
+      run:
+        working-directory: Proyecto/notifications_consumer
+        shell: bash
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          python -m venv venv
+          bash -c "source venv/bin/activate && pip install -r requirements.txt"
+
+      - name: Run Flake8
+        run: bash -c "source venv/bin/activate && flake8 --config=.flake8"

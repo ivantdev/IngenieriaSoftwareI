@@ -1,3 +1,3 @@
 [flake8]
-exclude = .git, __pycache__, migrations, venv, env, docs, */admin.py, */tests.py, common/models.py, common/views.py
+exclude = .git, __pycache__, migrations, venv, env
 max-line-length = 100
