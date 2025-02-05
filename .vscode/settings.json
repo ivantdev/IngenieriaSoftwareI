@@ -1,0 +1,14 @@
+{
+    "eslint.options": {
+        "cwd": "${workspaceFolder}/Proyecto/landing/" 
+    },
+    "eslint.validate": ["javascript", "javascriptreact"],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": true,
+    "flake8.cwd": "${workspaceFolder}/Proyecto/django-backend/centro_medico/",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/Proyecto/python_shared"
+    ]
+}
