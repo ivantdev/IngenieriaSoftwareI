@@ -2,9 +2,13 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from pathlib import Path
 
 
 def main():
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(BASE_DIR / "python_shared"))
+
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "centro_medico.settings")
     try:

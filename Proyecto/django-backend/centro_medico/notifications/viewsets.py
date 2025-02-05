@@ -1,6 +1,6 @@
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import Notification
+from shared.notifications.models import Notification
 from .serializers import NotificationSerializer
 
 
@@ -11,7 +11,7 @@ class NotificationViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    This viewset acts as the publisher for notifications.
+    This viewset acts as the Producer for notifications.
     It allows creating new notifications (which are stored in the database)
     and listing/retrieving them.
     Note: The status and attempts fields are read-only. Once a notification is sent,
