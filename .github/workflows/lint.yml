@@ -1,0 +1,85 @@
+name: Run Linters on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  landing-eslint:
+    name: Run ESLint on landing
+    runs-on: ubuntu-latest
+    container:
+      image: node:18
+    defaults:
+      run:
+        working-directory: Proyecto/landing
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
+
+  backend-flake8:
+    name: Run Flake8 on Django
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.11.10
+    defaults:
+      run:
+        working-directory: Proyecto/django-backend/centro_medico
+        shell: bash
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          python -m venv venv
+          bash -c "source venv/bin/activate && pip install -r requirements.txt"
+
+      - name: Run Flake8
+        run: bash -c "source venv/bin/activate && flake8 --config=.flake8"
+
+  frontend-eslint:
+    name: Run ESLint on frontend
+    runs-on: ubuntu-latest
+    container:
+      image: node:18
+    defaults:
+      run:
+        working-directory: Proyecto/frontend
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
+
+  consumer-flake8:
+    name: Run Flake8 on Consumer
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.11.10
+    defaults:
+      run:
+        working-directory: Proyecto/notifications_consumer
+        shell: bash
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          python -m venv venv
+          bash -c "source venv/bin/activate && pip install -r requirements.txt"
+
+      - name: Run Flake8
+        run: bash -c "source venv/bin/activate && flake8 --config=.flake8"
