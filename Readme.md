@@ -1,28 +1,39 @@
-# Repositorio grupal - Ingeniería de software 1 - 2024-2
+# 📌 Repositorio grupal - Ingeniería de software 1 - 2024-2
 
-## Integrantes
+### Proyecto FuturaSalud
 
-- Nelson Ivan Castellanos Betancourt (necastellanosb)
-- Nicolás Zuluaga Galindo (nzuluga)
-- Angel Santiago Avendaño Cañon (aavendanoca)
-- David Sebastian Hurtado Sanchez (dhurtados)
+## 📌 Integrantes
 
-## Nombre del Proyecto
-FuturaSalud
+- Nelson Ivan Castellanos Betancourt (necastellanosb@unal.edu.co)
+- Nicolás Zuluaga Galindo (nzuluga@unal.edu.co)
+- Angel Santiago Avendaño Cañon (aavendanoca@unal.edu.co)
+- David Sebastian Hurtado Sanchez (dhurtados@unal.edu.co)
 
-## Descripción del Proyecto
-El área de Urgencias busca optimizar la atención al paciente y la coordinación interna mediante una solución tecnológica integral. Para ello, se han priorizado funcionalidades clave que abarcan tanto la experiencia del paciente como la eficiencia del personal. Se implementará un portal con información del centro médico y un formulario de pre-registro para agilizar la admisión, además de un sistema de autenticación y registro de usuarios para reforzar la seguridad. También se contemplan notificaciones y alertas al personal, acceso centralizado a protocolos y guías, y la medición de la ocupación en tiempo real. Estas características mejorarán la gestión de recursos y la fluidez de los procesos, impulsando una experiencia de urgencias más segura, rápida y confiable.
+## 🚀 Descripción del Proyecto
+FuturaSalud es una solución tecnológica diseñada para optimizar la atención en el área de urgencias de los centros médicos. Su propósito es mejorar la experiencia del paciente y la eficiencia operativa del personal de salud mediante la digitalización y automatización de procesos clave.
 
-## Tecnologías utilizadas 
-### Lenguajes de programación
-- JavaScript
-- HTML
-- CSS
-- Python
-### Framworks
-- Django
-- React
+### 🎯 Objetivos del Proyecto
+- Reducir los tiempos de espera mediante un sistema de pre-registro y auto-triage en línea.
+- Mejorar la comunicación entre pacientes, acompañantes y personal de salud a través de notificaciones y mensajería interna.
+- Optimizar la gestión de recursos con funcionalidades como asignación de camas y visualización de ocupación en tiempo real.
+- Facilitar el acceso a información relevante, incluyendo protocolos médicos y guías de atención.
+- Generar estadísticas y reportes para evaluar la eficiencia del servicio.
+
+## 🛠 Tecnologías utilizadas 
+
+### 📌 Frontend
+- **Lenguajes:** HTML5, CSS3, JavaScript
+- **Framework:** React.js
+- **Diseño UX/UI:** Figma
 ### Servicios externos
 
+### 📌 Backend
+- **Lenguajes:** Python, SQL
+- **Framework:** Django Rest Framework (DRF)
+- **Base de datos:** SQLite (Turso)
 
-
+### 📌 Infraestructura
+- **Hosting:** Vecel (Frontend), CloudRun (Backend)
+- **Notificaciones:** Firebase, Resend
+- **Gestión de tareas:** Trello
+- **Control de versiones:** GitHub
