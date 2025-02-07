@@ -25,7 +25,6 @@ FuturaSalud es una solución tecnológica diseñada para optimizar la atención 
 - **Lenguajes:** HTML5, CSS3, JavaScript
 - **Framework:** React.js
 - **Diseño UX/UI:** Figma
-### Servicios externos
 
 ### 📌 Backend
 - **Lenguajes:** Python, SQL
