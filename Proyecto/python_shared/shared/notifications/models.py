@@ -40,3 +40,17 @@ class Notification(models.Model):
     def __str__(self):
         recipients_list = ", ".join([str(user) for user in self.recipients.all()])
         return f"Notification to [{recipients_list}] - {self.title}"
+
+    def get_recipient_identifiers(self):
+        """
+        Returns a list of recipient identifiers based on the notification channel.
+        """
+        if self.channel == "email":
+            return [user.email for user in self.recipients.all() if user.email]
+        elif self.channel == "whatsapp":
+            return [
+                user.phone_number for user in self.recipients.all() if user.phone_number
+            ]
+        # add more channels here
+        else:
+            return []

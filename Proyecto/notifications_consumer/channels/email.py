@@ -2,38 +2,21 @@ import json
 from json import JSONDecodeError
 import logging
 from typing import List, Dict, Any, Union
-
 import resend
+from .base import NotificationChannelStrategy
+
 
 logger = logging.getLogger(__name__)
 
 
-class EmailNotification:
+class EmailNotificationStrategy(NotificationChannelStrategy):
     """
     Class for processing notifications for the 'email' channel.
-    Expects the content to be a JSON object with the following structure:
-
-    ```json
-    {
-        "html": "<p>HTML content</p>",
-        "text": "Plain text content",  // Optional
-        "subject": "Email subject"
-    }
-    ```
     """
 
     REQUIRED_KEYS = ["html", "subject"]
 
     def __init__(self, content: Union[str, Dict[str, str]]):
-        """
-        Initializes the EmailNotification object.
-
-        Args:
-            content: The notification content, either a JSON string or a dictionary.
-
-        Raises:
-            ValueError: If the content is not valid JSON or is missing required keys.
-        """
         if isinstance(content, str):
             try:
                 content = json.loads(content)
@@ -47,33 +30,28 @@ class EmailNotification:
             raise ValueError(f"Missing keys in email content: {missing}")
 
         self.html: str = content["html"]
-        self.text: str = content.get("text", "")  # 'text' is optional.  Use .get()
+        self.text: str = content.get("text", "")
         self.subject: str = content["subject"]
 
     def send(
-        self, recipient_emails: List[str], api_key: str, sender_email: str
+        self, recipient_identifiers: List[str], config: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """
-        Sends the email using Resend.
+        """Sends the email using Resend."""
 
-        Args:
-            recipient_emails: A list of recipient email addresses.
-            api_key: The Resend API key.
-            sender_email: Email address of the sender
-
-        Returns:
-            The response from the Resend API.  This is typically a dictionary.
-
-        Raises:
-            ValueError: if recipient_emails is empty.
-            Exception: Re-raises any exceptions from the Resend API.
-        """
-        if not recipient_emails:
+        if not recipient_identifiers:
             raise ValueError("recipient_emails cannot be empty")
+
+        api_key = config.get("api_key")
+        sender_email = config.get("sender_email")
+
+        if not api_key or not sender_email:
+            raise ValueError(
+                "API key and sender email are required for email notifications."
+            )
 
         params: Dict[str, Any] = {
             "from": sender_email,
-            "to": recipient_emails,
+            "to": recipient_identifiers,
             "subject": self.subject,
             "html": self.html,
         }
