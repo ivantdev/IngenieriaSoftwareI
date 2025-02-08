@@ -1,20 +1,15 @@
-"""
-Consumer script for processing notifications.
-This script uses the Django ORM to query notifications from the shared model and process them.
-It uses Resend for sending emails.
-The channel-specific logic is separated into different modules under the 'channels' package.
-"""
-
 import os
 import sys
 import time
 import django
 import logging
 import environ
-from channels.email import EmailNotification
+from channels.email import EmailNotificationStrategy
+from channels.whatsapp import WhatsAppNotificationStrategy
+from channels.base import NotificationChannelStrategy
 from pathlib import Path
 from django.db.models.query import QuerySet
-from typing import List, Dict, Any, Optional, NoReturn
+from typing import List, Dict, Any, Optional, NoReturn, Type
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,144 +18,157 @@ sys.path.insert(0, str(BASE_DIR / "python_shared"))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 django.setup()
 
-from shared.notifications.models import (  # noqa: E402 // import after django.setup()
-    Notification,
-)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-)
+from shared.notifications.models import Notification  # noqa: E402
 
 
-# Logger
-logger = logging.getLogger(__name__)
-env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-
-
-# Configure Resend API key
-RESEND_API_KEY: Optional[str] = os.environ.get("RESEND_API_KEY")
-if not RESEND_API_KEY:
-    logger.error("RESEND_API_KEY is not set in the environment variables.")
-    sys.exit(1)
-
-
-# Configure domain for email sender
-APP_DOMAIN: Optional[str] = os.environ.get("APP_DOMAIN")
-if not APP_DOMAIN:
-    logger.error("APP_DOMAIN is not set in the environment variables.")
-    sys.exit(1)
-
-
-def process_notification(notification: Notification) -> bool:
+class Consumer:
     """
-    Processes a notification based on its channel.
-    - Tries to instantiate the corresponding channel-specific object.
-    - If validation fails, marks the notification as invalid.
-    - If successful, attempts to send the notification.
+    Consumes notifications from the database and dispatches them to the
+    appropriate channel.
     """
 
-    recipient_emails: List[str] = [
-        user.email for user in notification.recipients.all() if user.email
-    ]
+    def __init__(self, poll_interval: int = 10):
+        self.poll_interval = poll_interval
+        self.logger = logging.getLogger(__name__)
+        self.env = environ.Env(DEBUG=(bool, False))
+        self.env.read_env(os.path.join(BASE_DIR, ".env"))
 
-    if notification.channel == "email":
-        try:
-            email_notification = EmailNotification(notification.content)
-        except ValueError as ve:
-            logger.error("Notification %s invalid: %s", notification.id, ve)
+        self.channel_config: Dict[str, Dict[str, Any]] = {
+            "email": {
+                "api_key": self.env("EMAIL_API_KEY"),
+                "sender_email": self.env("EMAIL_SENDER"),
+            },
+            "whatsapp": {
+                "api_key": self.env("WHATSAPP_API_KEY"),
+                "sender_phone_number": self.env("WHATSAPP_SENDER"),
+            },
+            # Add more settings by channel here...
+        }
+
+        self.channel_strategies: Dict[str, Type[NotificationChannelStrategy]] = {
+            "email": EmailNotificationStrategy,
+            "whatsapp": WhatsAppNotificationStrategy,
+            # Add more strategies here...
+        }
+
+        self._validate_config()
+
+    def _validate_config(self) -> None:
+        """Validates that all channels have their required configuration."""
+        for channel, config in self.channel_config.items():
+            missing_vars = [
+                key for key, value in config.items() if value is None or value == ""
+            ]
+            if missing_vars:
+                self.logger.error(
+                    "Missing required configuration for channel %s: %s",
+                    channel,
+                    ", ".join(missing_vars),
+                )
+                sys.exit(1)
+
+    def get_channel_strategy(
+        self, channel_name: str
+    ) -> Optional[Type[NotificationChannelStrategy]]:
+        """Retrieves the strategy."""
+        return self.channel_strategies.get(channel_name)
+
+    def process_notification(self, notification: Notification) -> bool:
+        """Processes a single notification."""
+
+        recipient_identifiers: List[str] = notification.get_recipient_identifiers()
+        strategy_class: Optional[Type[NotificationChannelStrategy]] = (
+            self.get_channel_strategy(notification.channel)
+        )
+
+        if strategy_class is None:
+            self.logger.error("Unknown channel: %s", notification.channel)
             notification.status = "invalid"
             notification.save()
             return False
 
-        if not recipient_emails:
-            logger.error(
-                "Notification %s has no valid recipient emails.", notification.id
+        try:
+            channel_sender: NotificationChannelStrategy = strategy_class(
+                notification.content
+            )
+        except ValueError as e:
+            self.logger.error("Notification %s invalid: %s", notification.id, e)
+            notification.status = "invalid"
+            notification.save()
+            return False
+
+        if not recipient_identifiers:
+            self.logger.error(
+                "Notification %s has no valid recipient identifiers", notification.id
+            )
+            notification.status = "invalid"
+            notification.save()
+            return False
+
+        channel_config = self.channel_config.get(notification.channel)
+        if channel_config is None:
+            self.logger.error(
+                "No configuration found for channel: %s", notification.channel
             )
             notification.status = "invalid"
             notification.save()
             return False
 
         try:
-            response: Dict[str, Any] = email_notification.send(
-                recipient_emails=recipient_emails,
-                api_key=RESEND_API_KEY,
-                sender_email=f"notifications-no-reply@{APP_DOMAIN}",
-            )
-            logger.info(
-                "Resend response for notification %s: %s", notification.id, response
+            response = channel_sender.send(recipient_identifiers, channel_config)
+            self.logger.info(
+                "Response for notification %s: %s", notification.id, response
             )
             return True
         except Exception as e:
-            logger.error(
-                "Error sending email for notification %s: %s", notification.id, e
+            self.logger.exception(
+                "Error sending notification %s: %s", notification.id, e
             )
             return False
 
-    elif notification.channel == "whatsapp":
-        logger.info(
-            "WhatsApp channel processing not implemented for notification %s.",
-            notification.id,
-        )
-        return False
+    def run(self) -> NoReturn:
+        """Main consumer loop."""
+        while True:
+            self.logger.info("Checking for pending notifications...")
+            pending_notifications: QuerySet[Notification] = Notification.objects.filter(
+                status="pending", attempts__lt=5
+            )
 
-    else:
-        logger.error(
-            "Unknown channel for notification %s: %s",
-            notification.id,
-            notification.channel,
-        )
-        return False
-
-
-def consumer_loop(
-    poll_interval: int = 10,
-) -> NoReturn:
-    """
-    Main loop of the consumer.
-    Queries notifications with status "pending" and attempts less than 5,
-    processes them, and if a notification reaches 5 attempts, marks it as "failed".
-    """
-    while True:
-        logger.info("Checking for pending notifications with less than 5 attempts...")
-
-        pending_notifications: QuerySet[Notification] = Notification.objects.filter(
-            status="pending", attempts__lt=5
-        )
-
-        for notification in pending_notifications:
-            notification.attempts += 1
-            try:
-                success: bool = process_notification(notification)
-                if success:
-                    notification.status = "sent"
-                    logger.info("Notification %s sent successfully.", notification.id)
-                elif notification.attempts >= 5:
-                    logger.error(
-                        "Notification %s reached 5 attempts. Marking as failed.",
-                        notification.id,
+            for notification in pending_notifications:
+                notification.attempts += 1
+                try:
+                    success = self.process_notification(notification)
+                    if success:
+                        notification.status = "sent"
+                    elif notification.attempts >= 5:
+                        self.logger.error(
+                            "Notification %s reached 5 attempts. Marking as failed.",
+                            notification.id,
+                        )
+                        notification.status = "failed"
+                except Exception:
+                    self.logger.exception(
+                        "Error processing notification %s", notification.id
                     )
-                    notification.status = "failed"
+                    if notification.attempts >= 5:
+                        self.logger.error(
+                            "Notification %s reached 5 attempts. Marking as failed.",
+                            notification.id,
+                        )
+                        notification.status = "failed"
+                finally:
+                    notification.save()
 
-            except Exception as e:
-                logger.exception(
-                    "Error processing notification %s: %s", notification.id, e
-                )
-                if notification.attempts >= 5:
-                    logger.error(
-                        "Notification %s reached 5 attempts due to error. Marking as failed.",
-                        notification.id,
-                    )
-                    notification.status = "failed"
-            finally:
-                notification.save()
-
-        time.sleep(poll_interval)
+            time.sleep(self.poll_interval)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+    )
+    consumer = Consumer()
     try:
-        consumer_loop(poll_interval=10)
+        consumer.run()
     except KeyboardInterrupt:
-        logger.info("Consumer stopped manually.")
+        logging.info("Consumer stopped manually.")
