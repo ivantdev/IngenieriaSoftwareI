@@ -7,6 +7,7 @@ import ToastContainer from "@/components/ToastContainer";
 import "@/styles/index.css";
 import Home from "@/pages/Home";
 import PatientAdmission from "@/pages/PatientAdmission";
+import Login from "@/pages/Login";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -16,6 +17,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/" element={<Home />}>
             <Route index element={<h1>Dashboard</h1>} />
             <Route path="patient-admission" element={<PatientAdmission />} />
+            <Route path="/login" element={<Login />} />
           </Route>
         </Routes>
         <ToastContainer />
