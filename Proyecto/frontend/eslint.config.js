@@ -23,7 +23,10 @@ export default [
       react: { version: "detect" },
       "import/resolver": {
         alias: {
-          map: [["@", "./src"]],
+          map: [
+            ["@", "./src"],
+            ["@public/", "/"],
+          ],
           extensions: [".js", ".jsx", ".ts", ".tsx"],
         },
       },
@@ -36,32 +39,32 @@ export default [
       "jsx-a11y": a11y,
     },
     rules: {
-      // 🌟 JavaScript Best Practices
+      // JavaScript Best Practices
       ...js.configs.recommended.rules,
 
-      // 🔥 React Best Practices
+      // React Best Practices
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
       "react/prop-types": "error",
       "react/no-unstable-nested-components": "warn",
       "react/jsx-no-target-blank": "off",
 
-      // ⚡ React Hooks
+      // React Hooks
       ...reactHooks.configs.recommended.rules,
 
-      // 🔄 React Refresh
+      // React Refresh
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
       ],
 
-      // ✅ JSX Accessibility
+      // JSX Accessibility
       "jsx-a11y/alt-text": "warn",
       "jsx-a11y/anchor-is-valid": "warn",
       "jsx-a11y/click-events-have-key-events": "warn",
       "jsx-a11y/no-static-element-interactions": "warn",
 
-      // 🎨 Prettier (code formatting)
+      // Prettier (code formatting)
       "prettier/prettier": [
         "error",
         {
@@ -72,11 +75,22 @@ export default [
         },
       ],
 
-      // 🔥 Forbidden relative paths (force to use "@/")
+      // Forbidden relative paths and absolute paths
       "no-restricted-imports": [
         "error",
         {
-          patterns: ["../*", "./*"],
+          patterns: ["../*", "./*", "//"],
+          paths: [
+            {
+              name: "@public",
+              message:
+                "Use the `@public/` alias to access resources in `public`.",
+            },
+            {
+              name: "@",
+              message: "Use the `@` alias to access files in `src`.",
+            },
+          ],
         },
       ],
     },
