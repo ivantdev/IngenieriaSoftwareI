@@ -162,4 +162,8 @@ class PatientAdmissionSerializer(serializers.ModelSerializer):
             from occupancy.models import ResourceUsage
 
             ResourceUsage.objects.create(admission=admission, **usage_data)
+
+        pre_registration = admission.pre_registration
+        pre_registration.status = PreRegistration.COMPLETED
+        pre_registration.save()
         return admission

@@ -43,6 +43,8 @@ class ThirdParty(models.Model):
 
 
 class PreRegistration(models.Model):
+    PENDING = "pending"
+    COMPLETED = "completed"
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("expired", "Expired"),

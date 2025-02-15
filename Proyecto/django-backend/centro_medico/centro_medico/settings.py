@@ -29,7 +29,11 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 BACKEND_URL = env("BACKEND_URL")
+FRONTEND_URL = env("FRONTEND_URL")
+LANDING_URL = env("LANDING_URL")
+
 ALLOWED_HOSTS = [BACKEND_URL]
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, LANDING_URL]
 
 
 # Application definition
@@ -66,15 +70,30 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-FRONTEND_URL = env("FRONTEND_URL")
-LANDING_URL = env("LANDING_URL")
-
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:*",
     FRONTEND_URL,
     LANDING_URL,
 ]
 
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrf-token",
+    "X-CSRFToken",
+    "accept",
+    "origin",
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "centro_medico.urls"
 
