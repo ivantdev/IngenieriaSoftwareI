@@ -52,9 +52,11 @@ INSTALLED_APPS = [
     "common",
     "docs",
     "drf_spectacular",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -63,6 +65,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+FRONTEND_URL = env("FRONTEND_URL")
+LANDING_URL = env("LANDING_URL")
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:*",
+    FRONTEND_URL,
+    LANDING_URL,
+]
+
 
 ROOT_URLCONF = "centro_medico.urls"
 

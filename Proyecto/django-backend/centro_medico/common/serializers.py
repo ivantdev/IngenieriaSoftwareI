@@ -14,9 +14,9 @@ from pre_registrations.serializers import (
 
 
 class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
-    patient = PatientSerializer()
-    medical_info = PreRegistrationMedicalInfoSerializer()
-    third_party = ThirdPartySerializer()
+    patient = PatientSerializer(required=False)
+    medical_info = PreRegistrationMedicalInfoSerializer(required=False)
+    third_party = ThirdPartySerializer(required=False, allow_null=True)
 
     class Meta:
         model = PreRegistration
@@ -31,20 +31,85 @@ class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
+    def to_internal_value(self, data):
+        """
+        Custom method to process nested fields and avoid automatic validation.
+        """
+        patient_data = data.get("patient", None)
+        third_party_data = data.get("third_party", None)
+
+        # Validate patient
+        if patient_data:
+            if "id" not in patient_data:
+                required_fields = [
+                    "first_name",
+                    "last_name",
+                    "birth_date",
+                    "id_type",
+                    "id_number",
+                    "contact_number",
+                    "email",
+                ]
+                missing_fields = [
+                    field for field in required_fields if field not in patient_data
+                ]
+                if missing_fields:
+                    raise serializers.ValidationError(
+                        {
+                            "patient": f"Missing required fields: {', '.join(missing_fields)}"
+                        }
+                    )
+
+        if third_party_data:
+            required_fields = [
+                "relationship",
+                "first_name",
+                "last_name",
+                "contact_number",
+            ]
+            missing_fields = [
+                field for field in required_fields if field not in third_party_data
+            ]
+            if missing_fields:
+                raise serializers.ValidationError(
+                    {
+                        "third_party": f"Missing required fields: {', '.join(missing_fields)}"
+                    }
+                )
+
+        return data
+
     def create(self, validated_data):
-        patient_data = validated_data.pop("patient")
-        medical_info_data = validated_data.pop("medical_info")
-        third_party_data = validated_data.pop("third_party")
+        patient_data = validated_data.pop("patient", None)
+        medical_info_data = validated_data.pop("medical_info", None)
+        third_party_data = validated_data.pop("third_party", None)
 
-        patient = Patient.objects.create(**patient_data)
-        medical_info = PreRegistrationMedicalInfo.objects.create(**medical_info_data)
-        third_party = ThirdParty.objects.create(patient=patient, **third_party_data)
+        # Process patient
+        if patient_data and "id" in patient_data:
+            patient = Patient.objects.get(id=patient_data.pop("id"))
+        elif patient_data:
+            patient = Patient.objects.create(**patient_data)
+        else:
+            raise serializers.ValidationError({"patient": "Patient data is required."})
 
+        # Process medical_info
+        medical_info = None
+        if medical_info_data:
+            medical_info = PreRegistrationMedicalInfo.objects.create(
+                **medical_info_data
+            )
+
+        # Process third_party
+        third_party = None
+        if third_party_data:
+            third_party = ThirdParty.objects.create(patient=patient, **third_party_data)
+
+        # Create PreRegistration
         pre_registration = PreRegistration.objects.create(
             patient=patient,
             medical_info=medical_info,
             third_party=third_party,
-            **validated_data
+            **validated_data,
         )
         return pre_registration
 
