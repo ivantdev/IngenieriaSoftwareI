@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { useToast } from "@/hooks/useToast";
 import ToastContainer from "@/components/ToastContainer";
@@ -50,6 +51,60 @@ const validations = {
 
 function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
   const { toasts, addToast, removeToast } = useToast();
+  const [userData, setUserData] = useState(false);
+  const [showFullForm, setShowFullForm] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const validateAndFetch = async () => {
+    const idTypeInput = document.querySelector(`[name="id_type"]`);
+    const idNumberInput = document.querySelector(`[name="id_number"]`);
+    const idType = idTypeInput ? idTypeInput.value : "";
+    const idNumber = idNumberInput ? idNumberInput.value : "";
+
+    // Validar campos
+    const idTypeValidation = validateField(validations, "id_type", idType);
+    const idNumberValidation = validateField(
+      validations,
+      "id_number",
+      idNumber,
+    );
+
+    if (!idTypeValidation.isValid) {
+      addToast(idTypeValidation.message, { type: "error" });
+      return;
+    }
+    if (!idNumberValidation.isValid) {
+      addToast(idNumberValidation.message, { type: "error" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_ENDPOINT}/patients/?id_type=${idType}&id_number=${idNumber}`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status !== "success") {
+          addToast(data.message, { type: "error" });
+        }
+        if (data.data.length === 1) {
+          const patientData = data.data[0];
+          setUserData(patientData);
+        } else {
+          setShowFullForm(true);
+        }
+      } else {
+        addToast("Error al consultar el registro.", { type: "error" });
+      }
+    } catch {
+      addToast("Error al conectar con el servidor.", { type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const clickButton = (e) => {
     e.preventDefault();
 
@@ -61,7 +116,7 @@ function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
       const value = input ? input.value : "";
       const validation = validateField(validations, field, value);
 
-      if (!validation.isValid) {
+      if (!validation.isValid && !userData) {
         isValid = false;
         validationResults.push(validation.message);
       }
@@ -73,9 +128,23 @@ function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
           type: "error",
         });
       });
-    } else {
+      return;
+    }
+
+    const common = {
+      medical_info: {
+        reason: document.querySelector('[name="reason"]').value,
+        allergies: document.querySelector('[name="allergies"]').value,
+        preexisting_conditions: document.querySelector(
+          '[name="preexisting_conditions"]',
+        ).value,
+      },
+      status: "pending",
+    };
+    if (showFullForm) {
       updateFormData({
         ...formData,
+        ...common,
         patient: {
           first_name: document.querySelector('[name="first_name"]').value,
           last_name: document.querySelector('[name="last_name"]').value,
@@ -86,16 +155,17 @@ function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
             .value,
           email: document.querySelector('[name="email"]').value,
         },
-        reason: document.querySelector('[name="reason"]').value,
-        medical_info: {
-          allergies: document.querySelector('[name="allergies"]').value,
-          preexisting_conditions: document.querySelector(
-            '[name="preexisting_conditions"]',
-          ).value,
+      });
+    } else {
+      updateFormData({
+        ...formData,
+        ...common,
+        patient: {
+          id: userData.id,
         },
       });
-      nextStep();
     }
+    nextStep();
   };
 
   return (
@@ -104,26 +174,6 @@ function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
 
       <div>
         <h2>Información personal del paciente</h2>
-        <div className="field">
-          <label htmlFor="first_name">Nombres</label>
-          <input
-            type="text"
-            id="first_name"
-            name="first_name"
-            placeholder="Juan"
-            defaultValue={formData.patient.first_name || ""}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="last_name">Apellidos</label>
-          <input
-            type="text"
-            id="last_name"
-            name="last_name"
-            placeholder="Pérez"
-            defaultValue={formData.patient.last_name || ""}
-          />
-        </div>
         <div className="field">
           <label htmlFor="id_type">Tipo de identificación</label>
           <select
@@ -148,36 +198,94 @@ function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
             defaultValue={formData.patient.id_number || ""}
           />
         </div>
-        <div className="field">
-          <label htmlFor="birth_date">Fecha de nacimiento</label>
-          <input
-            type="date"
-            id="birth_date"
-            name="birth_date"
-            defaultValue={formData.patient.birth_date || ""}
-            max={new Date().toISOString().split("T")[0]}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="contact_number">Teléfono celular</label>
-          <input
-            type="text"
-            id="contact_number"
-            name="contact_number"
-            placeholder="+57 313 456 7890"
-            defaultValue={formData.patient.contact_number || ""}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="email">Correo electrónico</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            placeholder="juanperez@gmail.com"
-            defaultValue={formData.patient.email || ""}
-          />
-        </div>
+        {!showFullForm && !userData && (
+          <>
+            <button type="button" onClick={validateAndFetch} disabled={loading}>
+              {loading ? "Validando..." : "Validar"}
+            </button>
+            <div></div>
+          </>
+        )}
+        {userData && (
+          <>
+            <div className="field">
+              <label htmlFor="first_name">Nombres</label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                placeholder="Juan"
+                defaultValue={userData.first_name || ""}
+                disabled
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="last_name">Apellidos</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                placeholder="Pérez"
+                defaultValue={userData.last_name || ""}
+                disabled
+              />
+            </div>
+          </>
+        )}
+        {showFullForm && (
+          <>
+            <div className="field">
+              <label htmlFor="first_name">Nombres</label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                placeholder="Juan"
+                defaultValue={formData.patient.first_name || ""}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="last_name">Apellidos</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                placeholder="Pérez"
+                defaultValue={formData.patient.last_name || ""}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="birth_date">Fecha de nacimiento</label>
+              <input
+                type="date"
+                id="birth_date"
+                name="birth_date"
+                defaultValue={formData.patient.birth_date || ""}
+                max={new Date().toISOString().split("T")[0]}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="contact_number">Teléfono celular</label>
+              <input
+                type="text"
+                id="contact_number"
+                name="contact_number"
+                placeholder="+57 313 456 7890"
+                defaultValue={formData.patient.contact_number || ""}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="email">Correo electrónico</label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="juanperez@gmail.com"
+                defaultValue={formData.patient.email || ""}
+              />
+            </div>
+          </>
+        )}
       </div>
       <div>
         <h2>Información médica</h2>
@@ -212,7 +320,7 @@ function PatientForm({ formData = { patient: {} }, updateFormData, nextStep }) {
           ></textarea>
         </div>
       </div>
-      <button type="button" onClick={clickButton}>
+      <button type="button" disabled={loading} onClick={clickButton}>
         Siguiente
       </button>
     </form>

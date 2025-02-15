@@ -43,9 +43,10 @@ function PreRegistration() {
 
   useEffect(() => {
     async function fetchData() {
+      console.log(formData);
       try {
         if (step === 2) {
-          const result = await fetch(`${endpoint}/pre-registration`, {
+          const result = await fetch(`${endpoint}/pre-registration/`, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -61,6 +62,7 @@ function PreRegistration() {
                 type: "error",
               },
             );
+            return;
           }
 
           const jsonResponse = await result.json();
@@ -77,7 +79,8 @@ function PreRegistration() {
       }
     }
     fetchData();
-  }, [step, endpoint, formData, addToast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   return (
     <>

@@ -10,7 +10,6 @@ class PreRegistrationMedicalInfoSerializer(serializers.ModelSerializer):
             "reason",
             "allergies",
             "preexisting_conditions",
-            "status",
             "created_at",
             "updated_at",
         ]

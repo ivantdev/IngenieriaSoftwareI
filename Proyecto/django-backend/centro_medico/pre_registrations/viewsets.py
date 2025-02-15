@@ -20,3 +20,22 @@ class PreRegistrationLimitedViewSet(
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        """
+        Allow filtering by pre-registration `id` and patient `id_number`
+        if provided in query parameters.
+        """
+
+        queryset = super().get_queryset()
+        id = self.request.query_params.get("id")
+        id_number = self.request.query_params.get("id_number")
+        if id:
+            queryset = queryset.filter(id=id, status=PreRegistration.PENDING)
+        if id_number:
+            queryset = queryset.filter(
+                patient__id_number=id_number,
+                status=PreRegistration.PENDING,
+            )
+
+        return queryset

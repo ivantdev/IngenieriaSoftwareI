@@ -1,23 +1,7 @@
-import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useToast } from "@/hooks/useToast";
-import ToastContainer from "@/components/ToastContainer";
 
 function PreRegistrationCompleted({ formData }) {
-  const [isReady, setIsReady] = useState(false);
-  const { toasts, addToast, removeToast } = useToast();
-
-  useEffect(() => {
-    if (formData?.status !== "success") {
-      addToast("Error al cargar la información del pre-registro", {
-        type: "error",
-      });
-    } else {
-      setIsReady(true);
-    }
-  }, [formData, addToast]);
-
-  if (!isReady) {
+  if (formData.status !== "success") {
     return (
       <div className="stepform__container">
         <h3>Cargando información...</h3>
@@ -27,12 +11,10 @@ function PreRegistrationCompleted({ formData }) {
 
   return (
     <div className="stepform__container competed__form">
-      <ToastContainer toasts={toasts} removeToast={removeToast} />
-
       <div>
         <h2>
           Referencia de pre-registro:{" "}
-          <span className="bold">{formData.data.reference_code}</span>
+          <span className="bold">{formData.data.id}</span>
         </h2>
         <div className="completed__form-image">
           <img src={formData.data.qr_code} alt="Código QR escaneable" />
