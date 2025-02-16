@@ -1,0 +1,59 @@
+.hospital-info {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .info-card {
+    background: white;
+    padding: 1.5rem;
+    width: 60%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    text-align: left;
+  }
+  
+  .info-card h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .info-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #000;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .info-button-container {
+    display: flex;
+    justify-content: flex-end; /* Mueve el botón a la derecha */
+  }
+  
+  .info-button:hover {
+    background-color: #333;
+  }
+  
+  .contact-info {
+    background: #f8f8f8;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 60%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    text-align: left; /* Centra el texto */
+  }
+  
