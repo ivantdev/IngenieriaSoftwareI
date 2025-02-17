@@ -1,6 +1,6 @@
+import "@/styles/App.css";
 import { useNavigate } from "react-router-dom";
-import "/src/styles/App.css";
-import {useState} from "react"; // Importamos los estilos
+import { useState } from "react"; // Importamos los estilos
 
 function Registro() {
   const navigate = useNavigate();
@@ -24,57 +24,59 @@ function Registro() {
           <h2 className="login-title">Registro de usuario</h2>
           <form onSubmit={handleLogin}>
             <input
-                type="text"
-                placeholder="Usuario"
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
+              type="text"
+              placeholder="Usuario"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
             />
-            <br/>
+            <br />
             <input
-                type="number"
-                placeholder="Cedula"
-                value={cedula}
-                onChange={(e) => setCedula(e.target.value)}
+              type="number"
+              placeholder="Cedula"
+              value={cedula}
+              onChange={(e) => setCedula(e.target.value)}
             />
-            <br/>
+            <br />
             <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
-            <br/>
+            <br />
             <div className="password-container">
               <input
-                  type={passwordOcclude ? "password" : "text"}
-                  placeholder="Contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                type={passwordOcclude ? "password" : "text"}
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <span
-                  className="material-icons eye-icon"
-                  onClick={() => setPasswordOcclude(!passwordOcclude)}
+              <button
+                className="material-icons eye-icon"
+                onClick={() => setPasswordOcclude(!passwordOcclude)}
               >
                 {passwordOcclude ? "visibility_off" : "visibility"}
-              </span>
+              </button>
             </div>
-            <br/>
+            <br />
             <div className="password-container">
               <input
-                  type={passwordOcclude ? "password" : "text"}
-                  placeholder="Confirmar Contraseña"
-                  value={passwordConfirm}
-                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                type={passwordOcclude ? "password" : "text"}
+                placeholder="Confirmar Contraseña"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
               />
-              <span
-                  className="material-icons eye-icon"
-                  onClick={() => setPasswordOcclude(!passwordOcclude)}
+              <button
+                className="material-icons eye-icon"
+                onClick={() => setPasswordOcclude(!passwordOcclude)}
               >
                 {passwordOcclude ? "visibility_off" : "visibility"}
-              </span>
+              </button>
             </div>
-            <br/>
-            <button type="submit">Ingresar</button>
+            <br />
+            <button className={"submit-button"} type="submit">
+              Ingresar
+            </button>
           </form>
         </div>
       </div>

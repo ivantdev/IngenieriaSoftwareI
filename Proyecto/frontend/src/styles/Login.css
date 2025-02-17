@@ -83,7 +83,8 @@ html, body {
   }
   
   /* Botón de inicio de sesión */
-  .login-box button {
+  /* 📩 Botón */
+  .submit-button {
     width: 100%;
     padding: 10px;
     background: black;

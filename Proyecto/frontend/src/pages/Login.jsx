@@ -56,7 +56,9 @@ function Login() {
               ¿Olvidaste tu contraseña?
             </a>
           </div>
-          <button type="submit">Ingresar</button>
+          <button className={"submit-button"} type="submit">
+            Ingresar
+          </button>
         </form>
       </div>
     </div>

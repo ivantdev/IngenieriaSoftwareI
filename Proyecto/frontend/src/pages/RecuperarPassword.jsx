@@ -139,7 +139,9 @@ function RecuperarPassword() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <button type="submit">Ingresar</button>
+              <button className={"submit-button"} type="submit">
+                Ingresar
+              </button>
             </form>
           </>
         )}
