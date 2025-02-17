@@ -143,6 +143,7 @@ html, body {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
+  box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 5px;
   background: white;
@@ -160,6 +161,17 @@ html, body {
 .login-box input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px white inset;
   -webkit-text-fill-color: black !important;
+}
+
+.password-container{
+  display: flex;
+  align-items: center;
+}
+
+.password-container .eye-icon {
+  padding: 0 5px 0;
+  color: black;
+  cursor: pointer;
 }
 
 /* 🎨 Sección "Recuérdame" y "Olvidaste tu contraseña?" */
