@@ -17,8 +17,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/" element={<Home />}>
             <Route index element={<h1>Dashboard</h1>} />
             <Route path="patient-admission" element={<PatientAdmission />} />
-            <Route path="/login" element={<Login />} />
           </Route>
+          <Route path="/login" element={<Login />} />
         </Routes>
         <ToastContainer />
       </BrowserRouter>

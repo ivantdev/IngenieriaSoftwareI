@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "/src/styles/login.css";
-import Navbar from "/src/components/Navbar";
+import "@/styles/login.css";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -20,7 +19,6 @@ function Login() {
 
   return (
     <div>
-      <Navbar /> {/* ⬅ Agregamos la barra de navegación */}
       <div className="login-container">
         <div className="login-box">
           <h2 className="login-title">Inicio de sesión</h2>
