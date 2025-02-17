@@ -9,6 +9,7 @@ import Home from "@/pages/Home";
 import PatientAdmission from "@/pages/PatientAdmission";
 import Login from "@/pages/Login";
 import RecuperarPassword from "@/pages/RecuperarPassword";
+import Registro from "./pages/Registro.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById("root")).render(
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/recuperar" element={<RecuperarPassword />} />
+          <Route path="/registro" element={<Registro />} />
         </Routes>
         <ToastContainer />
       </BrowserRouter>
