@@ -10,6 +10,7 @@ function Navbar() {
         </div>
         <div className="navbar-right">
           <a href="#">Información</a>
+          <a href="/registro">Registro de Usuario</a>
           <a href="#">Pre-Registro</a>
           <a href="#">Contacto</a>
         </div>
