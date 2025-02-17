@@ -29,7 +29,11 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 BACKEND_URL = env("BACKEND_URL")
+FRONTEND_URL = env("FRONTEND_URL")
+LANDING_URL = env("LANDING_URL")
+
 ALLOWED_HOSTS = [BACKEND_URL]
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, LANDING_URL]
 
 
 # Application definition
@@ -52,9 +56,11 @@ INSTALLED_APPS = [
     "common",
     "docs",
     "drf_spectacular",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -63,6 +69,31 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    FRONTEND_URL,
+    LANDING_URL,
+]
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrf-token",
+    "X-CSRFToken",
+    "accept",
+    "origin",
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "centro_medico.urls"
 

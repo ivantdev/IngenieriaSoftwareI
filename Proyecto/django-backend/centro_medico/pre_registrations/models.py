@@ -14,9 +14,6 @@ class PreRegistrationMedicalInfo(models.Model):
     preexisting_conditions = models.TextField(
         blank=True, null=True, verbose_name="Preexisting Conditions"
     )
-    status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, verbose_name="Status"
-    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Creation Date")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Update Date")
 
@@ -46,6 +43,8 @@ class ThirdParty(models.Model):
 
 
 class PreRegistration(models.Model):
+    PENDING = "pending"
+    COMPLETED = "completed"
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("expired", "Expired"),
@@ -69,6 +68,7 @@ class PreRegistration(models.Model):
         on_delete=models.CASCADE,
         related_name="pre_registrations",
         verbose_name="Third Party",
+        null=True,
     )
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, verbose_name="Status"

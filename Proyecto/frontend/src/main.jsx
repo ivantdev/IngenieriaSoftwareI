@@ -1,20 +1,29 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // ⬅ Usa "react-router-dom"
-import "/src/styles/index.css"; // ⬅ Usa importación relativa estándar
+import { BrowserRouter, Routes, Route } from "react-router";
+import { GlobalProvider } from "@/context/GlobalContext";
+import ToastContainer from "@/components/ToastContainer";
 
-import Home from "/src/pages/Home";
-import Login from "/src/pages/Login";
-//import Dashboard from ".../pages/Dashboard"; // ⬅ Descomentar si lo necesitas
+import "@/styles/index.css";
+import Home from "@/pages/Home";
+import PatientAdmission from "@/pages/PatientAdmission";
+import Login from "@/pages/Login";
+import RecuperarPassword from "@/pages/RecuperarPassword";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Home />} />
-        {/* <Route path="/dashboard" element={<Dashboard />} /> ⬅ Usa esto si tienes un Dashboard separado */}
-      </Routes>
-    </BrowserRouter>
+    <GlobalProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />}>
+            <Route index element={<h1>Dashboard</h1>} />
+            <Route path="patient-admission" element={<PatientAdmission />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/recuperar" element={<RecuperarPassword />} />
+        </Routes>
+        <ToastContainer />
+      </BrowserRouter>
+    </GlobalProvider>
   </StrictMode>,
 );

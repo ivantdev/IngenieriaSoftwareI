@@ -161,3 +161,31 @@ html, body {
   -webkit-box-shadow: 0 0 0px 1000px white inset;
   -webkit-text-fill-color: black !important;
 }
+
+/* 🎨 Sección "Recuérdame" y "Olvidaste tu contraseña?" */
+.remember-me {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Estilo para el checkbox */
+.remember-me label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Estilo para el enlace "¿Olvidaste tu contraseña?" */
+.forgot-password {
+  color: #646cff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}

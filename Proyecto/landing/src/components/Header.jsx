@@ -8,7 +8,7 @@ function Header() {
         <NavLink to="/">Inicio</NavLink>
       </div>
       <div className="header__navigation">
-        <NavLink to="#">Información</NavLink>
+        <NavLink to="/hospital-info">Información</NavLink>
         <NavLink to="/pre-registration">Pre-registro</NavLink>
         <NavLink to="#">Contacto</NavLink>
       </div>
