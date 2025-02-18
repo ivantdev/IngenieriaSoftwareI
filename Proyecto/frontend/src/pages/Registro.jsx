@@ -1,6 +1,7 @@
 import "@/styles/App.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react"; // Importamos los estilos
+import { Eye as EyeIcon, EyeOff as EyeOffIcon } from "lucide-react";
 
 function Registro() {
   const navigate = useNavigate();
@@ -53,7 +54,10 @@ function Registro() {
               />
               <button
                 className="material-icons eye-icon"
-                onClick={() => setPasswordOcclude(!passwordOcclude)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPasswordOcclude(!passwordOcclude);
+                }}
               >
                 {passwordOcclude ? "visibility_off" : "visibility"}
               </button>
@@ -67,8 +71,11 @@ function Registro() {
                 onChange={(e) => setPasswordConfirm(e.target.value)}
               />
               <button
-                className="material-icons eye-icon"
-                onClick={() => setPasswordOcclude(!passwordOcclude)}
+                className="eye-icon"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPasswordOcclude(!passwordOcclude);
+                }}
               >
                 {passwordOcclude ? "visibility_off" : "visibility"}
               </button>
