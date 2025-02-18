@@ -59,7 +59,7 @@ function Registro() {
                   setPasswordOcclude(!passwordOcclude);
                 }}
               >
-                {passwordOcclude ? "visibility_off" : "visibility"}
+                {passwordOcclude ? <EyeIcon /> : <EyeOffIcon />}
               </button>
             </div>
             <br />
@@ -77,7 +77,7 @@ function Registro() {
                   setPasswordOcclude(!passwordOcclude);
                 }}
               >
-                {passwordOcclude ? "visibility_off" : "visibility"}
+                {passwordOcclude ? <EyeIcon /> : <EyeOffIcon />}
               </button>
             </div>
             <br />
