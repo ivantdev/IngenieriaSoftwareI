@@ -78,7 +78,9 @@ function RecuperarPassword() {
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
               />
-              <button type="submit">Continuar</button>
+              <button className={"submit-button"} type="submit">
+                Continuar
+              </button>
             </form>
           </>
         )}

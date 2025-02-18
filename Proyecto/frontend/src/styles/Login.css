@@ -97,7 +97,7 @@ html, body {
     transition: all 0.3s;
   }
   
-  .login-box button:hover {
+  .login-box .submit-button:hover {
     background: #333;
   }
   
@@ -172,7 +172,13 @@ html, body {
 .password-container .eye-icon {
   padding: 0 5px 0;
   color: black;
+  font-family: inherit;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  font-weight: initial;
   cursor: pointer;
+
 }
 
 /* 🎨 Sección "Recuérdame" y "Olvidaste tu contraseña?" */
