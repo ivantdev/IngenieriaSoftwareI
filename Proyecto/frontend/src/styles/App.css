@@ -1,7 +1,7 @@
 #root {
-  max-width: 1280px;
+  min-width: 100vw;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -70,7 +70,7 @@
 }
 
 /* Botón de login */
-.login-box button {
+.login-box .submit-button {
   width: 100%;
   padding: 10px;
   background: black;
@@ -80,7 +80,7 @@
   cursor: pointer;
 }
 
-.login-box button:hover {
+.login-box .submit-button:hover {
   background: gray;
 }
 
