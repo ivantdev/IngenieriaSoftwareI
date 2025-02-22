@@ -1,0 +1,32 @@
+name: Run ESLint on Frontend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Proyecto/frontend/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - Proyecto/frontend/**
+
+jobs:
+  frontend-eslint:
+    name: Run ESLint on frontend
+    runs-on: ubuntu-latest
+    container:
+      image: node:18
+    defaults:
+      run:
+        working-directory: Proyecto/frontend
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint

@@ -14,7 +14,7 @@ from pre_registrations.serializers import (
 
 
 class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
-    patient = PatientSerializer(required=False)
+    patient = PatientSerializer(required=True)
     medical_info = PreRegistrationMedicalInfoSerializer(required=False)
     third_party = ThirdPartySerializer(required=False, allow_null=True)
 
@@ -33,12 +33,17 @@ class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         """
-        Custom method to process nested fields and avoid automatic validation.
+        Custom method to process nested fields and avoid automatic validation
+        when creating a new PreRegistration.
         """
+        if self.instance is not None:
+            return super().to_internal_value(data)
+
         patient_data = data.get("patient", None)
         third_party_data = data.get("third_party", None)
+        medical_info = data.get("medical_info", None)
 
-        # Validate patient
+        # Validate patient, if it exists take id or all fields for new patient
         if patient_data:
             if "id" not in patient_data:
                 required_fields = [
@@ -59,6 +64,8 @@ class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
                             "patient": f"Missing required fields: {', '.join(missing_fields)}"
                         }
                     )
+        else:
+            raise serializers.ValidationError({"patient": "Patient data is required."})
 
         if third_party_data:
             required_fields = [
@@ -76,6 +83,21 @@ class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
                         "third_party": f"Missing required fields: {', '.join(missing_fields)}"
                     }
                 )
+        if medical_info is None:
+            raise serializers.ValidationError(
+                {"medical_info": "Medical_info data is required."}
+            )
+        else:
+            required_fields = ["reason", "allergies", "preexisting_conditions"]
+            missing_fields = [
+                field for field in required_fields if field not in medical_info
+            ]
+            if missing_fields:
+                raise serializers.ValidationError(
+                    {
+                        "medical_info": f"Missing required fields 1: {', '.join(missing_fields)}"
+                    }
+                )
 
         return data
 
@@ -89,7 +111,8 @@ class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
             patient = Patient.objects.get(id=patient_data.pop("id"))
         elif patient_data:
             patient = Patient.objects.create(**patient_data)
-        else:
+
+        if not patient:
             raise serializers.ValidationError({"patient": "Patient data is required."})
 
         # Process medical_info
@@ -102,7 +125,7 @@ class PreRegistrationCompleteSerializer(serializers.ModelSerializer):
         # Process third_party
         third_party = None
         if third_party_data:
-            third_party = ThirdParty.objects.create(patient=patient, **third_party_data)
+            third_party = ThirdParty.objects.create(**third_party_data)
 
         # Create PreRegistration
         pre_registration = PreRegistration.objects.create(
