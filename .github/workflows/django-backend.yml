@@ -26,6 +26,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup .env file
+        run: |
+          echo "DEBUG=True" > .env
+          echo "SECRET_KEY=supersecret" >> .env
+          echo "DATABASE_URL=db.sqlite3" >> .env
+          echo "FRONTEND_URL=http://localhost:3000" >> .env
+          echo "LANDING_URL=http://localhost:3000" >> .env
+          echo "BACKEND_URL=localhost" >> .env
+
       - name: Setup Python Environment and Install Dependencies
         run: |
           python -m venv venv
