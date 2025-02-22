@@ -1,0 +1,32 @@
+name: Run ESLint on Landing
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Proyecto/landing/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - Proyecto/landing/**
+
+jobs:
+  landing-eslint:
+    name: Run ESLint on Landing
+    runs-on: ubuntu-latest
+    container:
+      image: node:18
+    defaults:
+      run:
+        working-directory: Proyecto/landing
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
