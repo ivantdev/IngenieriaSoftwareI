@@ -3,11 +3,6 @@ from patients.models import Patient
 
 
 class PreRegistrationMedicalInfo(models.Model):
-    STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("expired", "Expired"),
-        ("attended", "Attended"),
-    ]
 
     reason = models.TextField(verbose_name="Reason")
     allergies = models.TextField(blank=True, null=True, verbose_name="Allergies")
