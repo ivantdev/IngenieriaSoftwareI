@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "docs",
     "drf_spectacular",
     "corsheaders",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -188,3 +189,12 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API documentation for the Medical Center system.",
     "VERSION": "1.0.0",
 }
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
+
+AWS_QUERYSTRING_AUTH = True
+AWS_QUERYSTRING_EXPIRE = 900  # 15min

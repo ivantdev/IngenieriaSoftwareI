@@ -14,6 +14,7 @@ class Protocol(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="protocols"
     )
+    file = models.FileField(upload_to="protocol-files/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

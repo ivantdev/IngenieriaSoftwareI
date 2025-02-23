@@ -20,6 +20,7 @@ class ProtocolSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
+            "file",
             "created_at",
             "updated_at",
             "category",
