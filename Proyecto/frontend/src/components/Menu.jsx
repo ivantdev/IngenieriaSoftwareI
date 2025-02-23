@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import {
   Home,
-  Calendar,
   HelpCircle,
   UserPlus,
   UserCheck,
@@ -14,7 +13,6 @@ import {
 
 const menuItems = [
   { path: "/", label: "Dashboard", icon: Home },
-  { path: "/schedule", label: "Horarios", icon: Calendar },
   { path: "/guides-protocols", label: "Guías y protocolos", icon: HelpCircle },
   {
     path: "/pre-registration",
@@ -39,24 +37,24 @@ const menuItems = [
 ];
 
 function Menu({ closeMenu }) {
-  const { userData } = useGlobalContext();
+  const { user } = useGlobalContext();
   return (
     <div className="flex flex-col h-full p-4 bg-white">
       {/* User Info */}
       <div className="flex items-center gap-4 mb-8">
         <div className="relative w-16 h-16 rounded-full bg-primary-blue flex-shrink-0">
           <img
-            src={userData.image}
+            src={user.image}
             alt="User Avatar"
             className="absolute inset-0 w-full h-full object-cover rounded-full"
           />
         </div>
         <div>
           <div className="font-bold text-lg md:text-xl lg:text-2xl">
-            {userData.name}
+            {user.name}
           </div>
           <div className="text-sm text-gray-500 md:text-base lg:text-lg">
-            {userData.email}
+            {user.email}
           </div>
         </div>
         <button type="button" className="ml-auto lg:hidden" onClick={closeMenu}>
