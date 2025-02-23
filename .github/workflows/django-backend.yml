@@ -16,6 +16,16 @@ jobs:
   backend-flake8-tests:
     name: Run Flake8 and Django Tests on Backend
     runs-on: ubuntu-latest
+    env:
+      DEBUG: False
+      SECRET_KEY: "fake_key"
+      FRONTEND_URL: "http://localhost:5173"
+      LANDING_URL: "http://localhost:5174"
+      BACKEND_URL: "localhost"
+      AWS_ACCESS_KEY_ID: "fake_key"
+      AWS_SECRET_ACCESS_KEY: "fake_secret"
+      AWS_STORAGE_BUCKET_NAME: "fake_bucket"
+      AWS_S3_ENDPOINT_URL: "https://fake-endpoint"
     container:
       image: python:3.11.10
     defaults:
@@ -25,15 +35,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Setup .env file
-        run: |
-          echo "DEBUG=True" > .env
-          echo "SECRET_KEY=supersecret" >> .env
-          echo "DATABASE_URL=db.sqlite3" >> .env
-          echo "FRONTEND_URL=http://localhost:3000" >> .env
-          echo "LANDING_URL=http://localhost:3000" >> .env
-          echo "BACKEND_URL=localhost" >> .env
 
       - name: Setup Python Environment and Install Dependencies
         run: |
