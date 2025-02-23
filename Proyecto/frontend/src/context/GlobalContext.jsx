@@ -22,31 +22,24 @@ const reducer = (state, action) => {
 function GlobalProvider({ children }) {
   const [globalState, dispatch] = useReducer(reducer, initialState);
   const { toasts, addToast, removeToast } = useToast();
-  const [userData, setUserData] = useLocalStorageSync("userData", {
+  const [user, setUser] = useLocalStorageSync("user", {
     name: "NO LOGGED IN",
     email: "no-logged-in@mail.com",
     image: "/placeholder.svg?height=64&width=64",
+    isActiveSession: false,
   });
 
   const contextValue = useMemo(() => {
     return {
       globalState,
       dispatch,
-      userData,
-      setUserData,
+      user,
+      setUser,
       toasts,
       addToast,
       removeToast,
     };
-  }, [
-    globalState,
-    dispatch,
-    userData,
-    setUserData,
-    toasts,
-    addToast,
-    removeToast,
-  ]);
+  }, [globalState, dispatch, user, setUser, toasts, addToast, removeToast]);
 
   return (
     <GlobalContext.Provider value={contextValue}>
