@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import OpcionRecuperacion from "@/components/RecuperarPassword/OpcionRecuperacion";
 import "@/styles/RecuperarPassword.css";
 
-function RecuperarPassword() {
+function RecoveryPassword() {
   const [step, setStep] = useState(1); // Controla los pasos del flujo
   const [usuario, setUsuario] = useState("");
   const [opcionRecuperacion, setOpcionRecuperacion] = useState("");
@@ -152,4 +152,4 @@ function RecuperarPassword() {
   );
 }
 
-export default RecuperarPassword;
+export default RecoveryPassword;

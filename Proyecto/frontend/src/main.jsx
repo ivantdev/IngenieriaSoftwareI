@@ -7,8 +7,8 @@ import "@/styles/index.css";
 import Home from "@/pages/Home";
 import PatientAdmission from "@/pages/PatientAdmission";
 import Login from "@/pages/Login";
-import RecuperarPassword from "@/pages/RecuperarPassword";
-import Registro from "@/pages/Registro.jsx";
+import Register from "@/pages/Register.jsx";
+import RecoveryPassword from "@/pages/RecoveryPassword.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -20,8 +20,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="patient-admission" element={<PatientAdmission />} />
           </Route>
           <Route path="/login" element={<Login />} />
-          <Route path="/recuperar" element={<RecuperarPassword />} />
-          <Route path="/registro" element={<Registro />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/recovery" element={<RecoveryPassword />} />
         </Routes>
         <ToastContainer />
       </BrowserRouter>
