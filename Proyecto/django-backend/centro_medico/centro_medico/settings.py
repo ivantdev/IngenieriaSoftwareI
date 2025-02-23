@@ -190,11 +190,21 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
 }
 
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
 
 AWS_QUERYSTRING_AUTH = True
+AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_QUERYSTRING_EXPIRE = 900  # 15min
+AWS_S3_FILE_OVERWRITE = False
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
