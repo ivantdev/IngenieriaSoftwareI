@@ -44,7 +44,7 @@ function Menu({ closeMenu }) {
       <div className="flex items-center gap-4 mb-8">
         <div className="relative w-16 h-16 rounded-full bg-primary-blue flex-shrink-0">
           <img
-            src={user.image}
+            src={user.image || "/placeholder.svg?height=64&width=64"}
             alt="User Avatar"
             className="absolute inset-0 w-full h-full object-cover rounded-full"
           />
