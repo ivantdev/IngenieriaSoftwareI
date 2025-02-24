@@ -7,7 +7,7 @@ import { fetchWithAuth } from "@/utils";
 function GuidesProtocols() {
   const [specialtyList, setSpecialtyList] = useState([]);
   const [subSpecialty, setSubSpecialty] = useState(null);
-  const { globalState, addToast } = useGlobalContext();
+  const { globalState, addToast, setUser } = useGlobalContext();
 
   useEffect(() => {
     const getSpecialties = async () => {
@@ -15,7 +15,7 @@ function GuidesProtocols() {
         const response = await fetchWithAuth(
           `${globalState.endpoint}/protocols/?sub_specialty=${subSpecialty}`,
           {},
-          globalState.setUser,
+          setUser,
         );
         const data = await response.json();
         if (data.status === "error") {
@@ -31,7 +31,7 @@ function GuidesProtocols() {
 
     if (!subSpecialty) return;
     getSpecialties();
-  }, [addToast, globalState.endpoint, globalState.setUser, subSpecialty]);
+  }, [addToast, globalState.endpoint, setUser, subSpecialty]);
 
   return (
     <div className="p-6 rounded-lg">

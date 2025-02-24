@@ -12,6 +12,7 @@ function getCSRFToken() {
 async function fetchWithAuth(url, options, setUser) {
   const response = await fetch(url, {
     ...options,
+    image: "/placeholder.svg?height=64&width=64",
     credentials: "include",
   });
 
