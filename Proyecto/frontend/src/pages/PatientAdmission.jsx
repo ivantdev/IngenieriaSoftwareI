@@ -84,6 +84,7 @@ function PatientAdmission() {
       console.log(admissionData);
       postAdmission();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, admissionData]);
 
   return (
