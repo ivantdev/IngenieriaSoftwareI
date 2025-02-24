@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Category
+from .models import Specialty
+from .models import SubSpecialty
 from .models import Protocol
 
-admin.site.register(Category)
+admin.site.register(Specialty)
+admin.site.register(SubSpecialty)
 admin.site.register(Protocol)

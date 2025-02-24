@@ -9,4 +9,20 @@ function getCSRFToken() {
   return null;
 }
 
-export { getCSRFToken };
+async function fetchWithAuth(url, options, setUser) {
+  const response = await fetch(url, {
+    ...options,
+    credentials: "include",
+  });
+
+  if (response.status === 403) {
+    setUser({
+      isActiveSession: false,
+    });
+    window.location.href = "/login";
+  }
+
+  return response;
+}
+
+export { getCSRFToken, fetchWithAuth };
