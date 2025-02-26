@@ -8,7 +8,7 @@ class Notification(models.Model):
     CHANNEL_CHOICES = [
         ("email", "Email"),
         ("mobile", "Mobile"),
-        ("whatsapp", "Whatsapp"),
+        ("telegram", "Telegram"),
     ]
 
     STATUS_CHOICES = [
@@ -47,9 +47,9 @@ class Notification(models.Model):
         """
         if self.channel == "email":
             return [user.email for user in self.recipients.all() if user.email]
-        elif self.channel == "whatsapp":
+        elif self.channel == "telegram":
             return [
-                user.phone_number for user in self.recipients.all() if user.phone_number
+                user.telegram_id for user in self.recipients.all() if user.telegram_id
             ]
         # add more channels here
         else:

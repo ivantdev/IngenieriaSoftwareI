@@ -1,8 +1,8 @@
 import json
-from json import JSONDecodeError
 import logging
-from typing import List, Dict, Any, Union
 import resend
+from json import JSONDecodeError
+from typing import List, Dict, Any, Union
 from .base import NotificationChannelStrategy
 
 
@@ -36,7 +36,12 @@ class EmailNotificationStrategy(NotificationChannelStrategy):
     def send(
         self, recipient_identifiers: List[str], config: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Sends the email using Resend."""
+        """
+        Sends the email using Resend.
+        ## Arguments
+        - recipient_identifiers: list of email addresses to send the email to.
+        - config: dictionary that must include the API key and sender email.
+        """
 
         if not recipient_identifiers:
             raise ValueError("recipient_emails cannot be empty")
