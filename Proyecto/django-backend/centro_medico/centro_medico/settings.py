@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "users",
+    "shared.users",
     "protocols",
     "pre_registrations",
     "patients",
@@ -180,8 +180,10 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+AUTH_USER_MODEL = "shared_users.User"
+
 AUTHENTICATION_BACKENDS = [
-    "users.backends.EmailBackend",
+    "shared.users.backends.EmailBackend",
 ]
 
 SPECTACULAR_SETTINGS = {
