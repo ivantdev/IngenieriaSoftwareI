@@ -1,10 +1,7 @@
 import Header from "@/components/Header";
-import { useNavigate } from "react-router-dom";
 import "@/styles/Horarios.css"; // Importamos el nuevo CSS para Horarios
 
 function Horarios() {
-  const navigate = useNavigate();
-
   return (
     <>
       <Header />
@@ -73,13 +70,6 @@ function Horarios() {
             El área de hospitalización opera las 24 horas del día, garantizando
             atención constante a nuestros pacientes internos.
           </p>
-
-          <button
-            className="horarios-button"
-            onClick={() => navigate("/hospital-info")}
-          >
-            Volver a Información
-          </button>
         </div>
       </main>
     </>

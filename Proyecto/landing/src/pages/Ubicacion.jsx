@@ -1,12 +1,10 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import Header from "@/components/Header";
-import { useNavigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "@/styles/Ubicacion.css";
 
 function Ubicacion() {
-  const navigate = useNavigate();
-  const position = [4.6097, -74.0817]; // Coordenadas de Bogotá
+  const position = [4.6363615, -74.0833047]; // UNAL Coordinates
 
   return (
     <>
@@ -32,13 +30,6 @@ function Ubicacion() {
             </Popup>
           </Marker>
         </MapContainer>
-
-        <button
-          className="ubicacion-button"
-          onClick={() => navigate("/hospital-info")}
-        >
-          Volver a Información
-        </button>
       </main>
     </>
   );
