@@ -1,8 +1,17 @@
 from django.test import TestCase
 from django.utils import timezone
-from occupancy.models import ResourceType, MedicalCenterCapacity, ResourceUsage, OccupancyHistory
+from occupancy.models import (
+    ResourceType,
+    MedicalCenterCapacity,
+    ResourceUsage,
+    OccupancyHistory,
+)
 from patients.models import PatientAdmission, Patient
-from pre_registrations.models import PreRegistration, PreRegistrationMedicalInfo, ThirdParty
+from pre_registrations.models import (
+    PreRegistration,
+    PreRegistrationMedicalInfo,
+    ThirdParty,
+)
 
 
 class OccupancyTestCase(TestCase):
@@ -29,7 +38,7 @@ class OccupancyTestCase(TestCase):
             relationship="Spouse",
             first_name="Jane",
             last_name="Doe",
-            contact_number="0987654321"
+            contact_number="0987654321",
         )
 
         # Create PreRegistration with medical_info
@@ -37,7 +46,7 @@ class OccupancyTestCase(TestCase):
             patient=self.patient,
             medical_info=self.medical_info,
             third_party=self.third_party,
-            status="pending"
+            status="pending",
         )
 
         # Create a PatientAdmission
@@ -45,7 +54,7 @@ class OccupancyTestCase(TestCase):
             pre_registration=self.pre_registration,
             admission_type="hospitalization",
             triage_level=5,
-            admission_date=timezone.now()
+            admission_date=timezone.now(),
         )
 
     def test_create_resource_usage(self):
@@ -54,7 +63,7 @@ class OccupancyTestCase(TestCase):
             admission=self.admission,
             resource_type=self.resource_type,
             resource_quantity=3,
-            start_time=timezone.now()
+            start_time=timezone.now(),
         )
         self.assertEqual(usage.resource_quantity, 3)
         self.assertEqual(usage.admission, self.admission)
@@ -63,8 +72,7 @@ class OccupancyTestCase(TestCase):
     def test_create_medical_center_capacity(self):
         """Test creating a MedicalCenterCapacity record"""
         capacity = MedicalCenterCapacity.objects.create(
-            resource_type=self.resource_type,
-            total_quantity=10
+            resource_type=self.resource_type, total_quantity=10
         )
         self.assertEqual(capacity.total_quantity, 10)
         self.assertEqual(capacity.resource_type, self.resource_type)
@@ -75,7 +83,7 @@ class OccupancyTestCase(TestCase):
             resource_type=self.resource_type,
             occupied_quantity=5,
             occupancy_percentage=50.00,
-            created_at=timezone.now()
+            created_at=timezone.now(),
         )
         self.assertEqual(history.occupied_quantity, 5)
         self.assertEqual(float(history.occupancy_percentage), 50.00)
