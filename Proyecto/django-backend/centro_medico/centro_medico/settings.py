@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "users",
+    "shared.users",
     "protocols",
     "pre_registrations",
     "patients",
@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "docs",
     "drf_spectacular",
     "corsheaders",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -179,12 +180,33 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+AUTH_USER_MODEL = "shared_users.User"
+
 AUTHENTICATION_BACKENDS = [
-    "users.backends.EmailBackend",
+    "shared.users.backends.EmailBackend",
 ]
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Medical Center API",
     "DESCRIPTION": "API documentation for the Medical Center system.",
     "VERSION": "1.0.0",
+}
+
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
+
+AWS_QUERYSTRING_AUTH = True
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_QUERYSTRING_EXPIRE = 900  # 15min
+AWS_S3_FILE_OVERWRITE = False
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
 }

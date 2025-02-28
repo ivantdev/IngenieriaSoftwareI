@@ -5,7 +5,7 @@ import django
 import logging
 import environ
 from channels.email import EmailNotificationStrategy
-from channels.whatsapp import WhatsAppNotificationStrategy
+from channels.telegram import TelegramNotificationStrategy
 from channels.base import NotificationChannelStrategy
 from pathlib import Path
 from django.db.models.query import QuerySet
@@ -38,16 +38,15 @@ class Consumer:
                 "api_key": self.env("EMAIL_API_KEY"),
                 "sender_email": self.env("EMAIL_SENDER"),
             },
-            "whatsapp": {
-                "api_key": self.env("WHATSAPP_API_KEY"),
-                "sender_phone_number": self.env("WHATSAPP_SENDER"),
+            "telegram": {
+                "bot_token": self.env("TELEGRAM_BOT_TOKEN"),
             },
             # Add more settings by channel here...
         }
 
         self.channel_strategies: Dict[str, Type[NotificationChannelStrategy]] = {
             "email": EmailNotificationStrategy,
-            "whatsapp": WhatsAppNotificationStrategy,
+            "telegram": TelegramNotificationStrategy,
             # Add more strategies here...
         }
 
@@ -77,6 +76,7 @@ class Consumer:
         """Processes a single notification."""
 
         recipient_identifiers: List[str] = notification.get_recipient_identifiers()
+        print(recipient_identifiers)
         strategy_class: Optional[Type[NotificationChannelStrategy]] = (
             self.get_channel_strategy(notification.channel)
         )

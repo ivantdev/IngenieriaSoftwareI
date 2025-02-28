@@ -12,6 +12,7 @@ DEBUG = env("DEBUG")
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
+    "shared.users",
     "shared.notifications",
 ]
 
@@ -21,5 +22,7 @@ DATABASES = {
         "NAME": env("DATABASE_URL", default=BASE_DIR / "db.sqlite3"),
     }
 }
+
+AUTH_USER_MODEL = "shared_users.User"
 
 USE_TZ = True

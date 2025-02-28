@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react"; // Importamos los estilos
 import { Eye as EyeIcon, EyeOff as EyeOffIcon } from "lucide-react";
 
-function Registro() {
+function Register() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
@@ -91,4 +91,4 @@ function Registro() {
   );
 }
 
-export default Registro;
+export default Register;

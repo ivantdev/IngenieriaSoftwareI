@@ -1,17 +1,28 @@
 from rest_framework import serializers
-from .models import Protocol, Category
+from .models import Specialty, SubSpecialty, Protocol
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class SubSpecialtySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
-        fields = ["id", "category_name"]
+        model = SubSpecialty
+        fields = ["id", "name"]
+
+
+class SpecialtySerializer(serializers.ModelSerializer):
+    sub_specialties = SubSpecialtySerializer(
+        many=True,
+        read_only=True,
+    )
+
+    class Meta:
+        model = Specialty
+        fields = ["id", "name", "sub_specialties"]
 
 
 class ProtocolSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
-    category_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), source="category", write_only=True
+    sub_specialty = SubSpecialtySerializer(read_only=True)
+    sub_specialty_id = serializers.PrimaryKeyRelatedField(
+        queryset=SubSpecialty.objects.all(), write_only=True
     )
 
     class Meta:
@@ -20,9 +31,10 @@ class ProtocolSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
+            "file",
             "created_at",
             "updated_at",
-            "category",
-            "category_id",
+            "sub_specialty",  # read only (get)
+            "sub_specialty_id",  # write only (put, post)
         ]
         read_only_fields = ["id", "created_at", "updated_at"]

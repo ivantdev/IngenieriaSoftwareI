@@ -34,10 +34,11 @@ FuturaSalud es una solución tecnológica diseñada para optimizar la atención 
 - **Lenguajes:** Python, SQL
 - **Framework:** Django Rest Framework (DRF)
 - **Base de datos:** SQLite
+- **Alacenamiento de objetos:** S3 Object Storage
 
 ### 📌 Infraestructura
 
-- **Hosting:** Vecel (Frontend), CloudRun (Backend), Turso(DB)
+- **Hosting:** Vecel (Frontend), CloudRun (Backend), Turso(DB), Cloudflare R2 (S3 compatible)
 - **Notificaciones:** Firebase, Resend
 - **Gestión de tareas:** Trello
 - **Control de versiones:** GitHub
