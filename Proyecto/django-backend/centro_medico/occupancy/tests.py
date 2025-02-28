@@ -4,6 +4,7 @@ from occupancy.models import ResourceType, MedicalCenterCapacity, ResourceUsage,
 from patients.models import PatientAdmission, Patient
 from pre_registrations.models import PreRegistration, PreRegistrationMedicalInfo, ThirdParty
 
+
 class OccupancyTestCase(TestCase):
     def setUp(self):
         # Create a ResourceType
