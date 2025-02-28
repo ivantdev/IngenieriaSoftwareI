@@ -1,10 +1,7 @@
 import Header from "@/components/Header";
 import "@/styles/Especialidades.css";
-import { useNavigate } from "react-router-dom";
 
 function Especialidades() {
-  const navigate = useNavigate();
-
   return (
     <>
       <Header />
@@ -67,13 +64,6 @@ function Especialidades() {
             </p>
           </article>
         </section>
-
-        <button
-          className="info-button"
-          onClick={() => navigate("/hospital-info")}
-        >
-          Volver a Información
-        </button>
       </main>
     </>
   );

@@ -43,7 +43,6 @@ function PreRegistration() {
 
   useEffect(() => {
     async function fetchData() {
-      console.log(formData);
       try {
         if (step === 2) {
           const result = await fetch(`${endpoint}/pre-registration/`, {
