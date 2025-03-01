@@ -65,7 +65,7 @@ function ResourcesAssign({ onSubmit }) {
     };
 
     fetchResourceTypes();
-  }, []);
+  }, [addToast, globalState.endpoint]);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">

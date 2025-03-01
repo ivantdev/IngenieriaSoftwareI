@@ -35,7 +35,7 @@ function useLocalStorageSync(key, initialValue) {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [key, state]);
+  }, [initialValue, key, state]);
 
   return [state, setState];
 }
