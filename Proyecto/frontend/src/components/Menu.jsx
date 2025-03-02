@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 import {
   Home,
   HelpCircle,
@@ -9,7 +10,6 @@ import {
   Bell,
   LogOut,
 } from "lucide-react";
-import useGlobalContext from "@/hooks/useGlobalContext";
 import { useNavigate } from "react-router";
 import { getCSRFToken } from "@/utils";
 
@@ -20,6 +20,7 @@ const menuItems = [
     path: "/pre-registration",
     label: "Pre-registro de paciente",
     icon: UserPlus,
+    target: "_blank",
   },
   {
     path: "/patient-admission",
@@ -68,8 +69,9 @@ function Menu({ closeMenu }) {
       addToast("Error error cerrando sesión", "error");
     }
   };
+  menuItems[2].path = `${globalState.landing_url}/pre-registration`;
   return (
-    <div className="flex flex-col h-full p-4 bg-white">
+    <div className="flex h-screen flex-col p-4 bg-white">
       {/* User Info */}
       <div className="flex items-center gap-4 mb-8">
         <div className="relative w-16 h-16 rounded-full bg-primary-blue flex-shrink-0">
@@ -119,7 +121,7 @@ function Menu({ closeMenu }) {
       <div className="mt-auto">
         <NavLink
           to="/logout"
-          onClick={handleLogout}
+          onClick={closeMenu}
           className="flex items-center gap-3 p-2 text-gray-800  hover:bg-gray-200 rounded-md w-full text-base md:text-lg lg:text-xl"
         >
           <LogOut className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />

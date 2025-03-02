@@ -9,12 +9,18 @@ function ResourcesAssign({ onSubmit }) {
 
   const handleResourceChange = (index, field, value) => {
     const newResources = [...resources];
-    newResources[index] = { ...newResources[index], [field]: value };
+    newResources[index] = {
+      ...newResources[index],
+      [field]: Number.parseInt(value),
+    };
     setResources(newResources);
   };
 
   const handleAddResource = () => {
-    setResources([...resources, { id: "", quantity: "" }]);
+    setResources([
+      ...resources,
+      { resource_type_id: "", resource_quantity: "" },
+    ]);
   };
 
   const handleRemoveResource = (index) => {
@@ -25,7 +31,7 @@ function ResourcesAssign({ onSubmit }) {
   const handleSubmit = () => {
     let valid = true;
     resources.forEach((resource) => {
-      if (!resource.id || !resource.quantity) {
+      if (!resource.resource_type_id || !resource.resource_quantity) {
         addToast("Por favor, complete todos los campos", "error");
         valid = false;
       }
@@ -65,7 +71,7 @@ function ResourcesAssign({ onSubmit }) {
     };
 
     fetchResourceTypes();
-  }, []);
+  }, [addToast, globalState.endpoint]);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">
@@ -83,7 +89,7 @@ function ResourcesAssign({ onSubmit }) {
             <select
               value={resource.type}
               onChange={(e) =>
-                handleResourceChange(index, "id", e.target.value)
+                handleResourceChange(index, "resource_type_id", e.target.value)
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             >
@@ -102,11 +108,11 @@ function ResourcesAssign({ onSubmit }) {
             </label>
             <input
               type="number"
-              value={resource.quantity}
+              value={resource.resource_quantity}
               min={1}
               max={10}
               onChange={(e) =>
-                handleResourceChange(index, "quantity", e.target.value)
+                handleResourceChange(index, "resource_quantity", e.target.value)
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />

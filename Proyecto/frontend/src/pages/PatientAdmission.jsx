@@ -6,13 +6,13 @@ import AdmissionDetails from "@/components/Admission/AdmissionDetails";
 import AdmissionCompleted from "@/components/Admission/AdmissionCompleted";
 import useGlobalContext from "@/hooks/useGlobalContext";
 
-import { getCSRFToken } from "@/utils/";
+import { getCSRFToken, fetchWithAuth } from "@/utils/";
 
 function PatientAdmission() {
   const [step, setStep] = useState(0);
   const [preRegistrationData, setPreRegistrationData] = useState(null);
   const [admissionData, setAdmissionData] = useState(null);
-  const { globalState, addToast } = useGlobalContext();
+  const { globalState, addToast, setUser } = useGlobalContext();
 
   const successSearchPreRegistration = (data) => {
     setPreRegistrationData(data);
@@ -45,18 +45,16 @@ function PatientAdmission() {
   useEffect(() => {
     const postAdmission = async () => {
       try {
-        const response = await fetch(
-          `${globalState.endpoint}/patient-admissions/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCSRFToken(),
-            },
-            credentials: "include",
-            body: JSON.stringify(admissionData),
+        const url = `${globalState.endpoint}/patient-admissions/`;
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
           },
-        );
+          body: JSON.stringify(admissionData),
+        };
+        const response = await fetchWithAuth(url, options, setUser);
 
         if (!response.ok) {
           addToast(`Error al registrar la admisión`, "error");
@@ -69,7 +67,6 @@ function PatientAdmission() {
           addToast("Admisión registrada exitosamente", "success");
           setAdmissionData(data.data);
           setStep(5);
-          console.log(data.data);
         } else {
           addToast(`Error al registrar la admisión: ${data.message}`, "error");
           setStep(3);
@@ -81,7 +78,6 @@ function PatientAdmission() {
     };
 
     if (step == 4) {
-      console.log(admissionData);
       postAdmission();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

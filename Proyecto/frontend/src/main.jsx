@@ -10,6 +10,7 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register.jsx";
 import RecoveryPassword from "@/pages/RecoveryPassword.jsx";
 import GuidesProtocols from "@/pages/GuidesProtocols";
+import Stats from "@/pages/Stats";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -17,7 +18,7 @@ createRoot(document.getElementById("root")).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />}>
-            <Route index element={<h1>Dashboard</h1>} />
+            <Route index element={<Stats />} />
             <Route path="patient-admission" element={<PatientAdmission />} />
             <Route path="guides-protocols" element={<GuidesProtocols />} />
           </Route>

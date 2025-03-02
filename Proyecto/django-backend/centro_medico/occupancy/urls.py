@@ -7,6 +7,7 @@ from .viewsets import (
     ResourceUsageViewSet,
     OccupancyHistoryViewSet,
 )
+from .views import SystemStatisticsView
 
 router = DefaultRouter()
 router.register(r"resource-types", ResourceTypeViewSet, basename="resource-type")
@@ -18,4 +19,7 @@ router.register(
 
 urlpatterns = [
     path("", include(router.urls)),
+    path(
+        "system-statistics/", SystemStatisticsView.as_view(), name="system-statistics"
+    ),
 ]

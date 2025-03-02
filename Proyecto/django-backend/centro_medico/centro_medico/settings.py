@@ -120,10 +120,16 @@ WSGI_APPLICATION = "centro_medico.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+DATABASE_URL = env("DATABASE_URL", default=None)
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": env("DATABASE_URL", default=BASE_DIR / "db.sqlite3"),
+        "ENGINE": (
+            "libsql.db.backends.sqlite3"
+            if DATABASE_URL
+            else "django.db.backends.sqlite3"
+        ),
+        "NAME": DATABASE_URL if DATABASE_URL else BASE_DIR / "db.sqlite3",
     }
 }
 
