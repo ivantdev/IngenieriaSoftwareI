@@ -121,7 +121,7 @@ function Menu({ closeMenu }) {
       <div className="mt-auto">
         <NavLink
           to="/logout"
-          onClick={closeMenu}
+          onClick={handleLogout}
           className="flex items-center gap-3 p-2 text-gray-800  hover:bg-gray-200 rounded-md w-full text-base md:text-lg lg:text-xl"
         >
           <LogOut className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />
