@@ -7,6 +7,7 @@ const GlobalContext = createContext(null);
 
 const initialState = {
   endpoint: import.meta.env.VITE_API_ENDPOINT || "https://api.example.com",
+  landing_url: import.meta.env.VITE_LANDING_URL || "https://example.com",
 };
 
 const reducer = (state, action) => {

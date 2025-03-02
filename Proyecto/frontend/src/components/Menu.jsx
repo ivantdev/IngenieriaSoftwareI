@@ -18,6 +18,7 @@ const menuItems = [
     path: "/pre-registration",
     label: "Pre-registro de paciente",
     icon: UserPlus,
+    target: "_blank",
   },
   {
     path: "/patient-admission",
@@ -37,9 +38,10 @@ const menuItems = [
 ];
 
 function Menu({ closeMenu }) {
-  const { user } = useGlobalContext();
+  const { user, globalState } = useGlobalContext();
+  menuItems[2].path = `${globalState.landing_url}/pre-registration`;
   return (
-    <div className="flex flex-col h-full p-4 bg-white">
+    <div className="flex h-screen flex-col p-4 bg-white">
       {/* User Info */}
       <div className="flex items-center gap-4 mb-8">
         <div className="relative w-16 h-16 rounded-full bg-primary-blue flex-shrink-0">
@@ -72,6 +74,7 @@ function Menu({ closeMenu }) {
                 <NavLink
                   to={item.path}
                   onClick={closeMenu}
+                  target={item.target || ""}
                   className={({ isActive }) =>
                     `flex items-center gap-4 p-2 pt-3 rounded-md text-gray-700 hover:bg-blue-500 hover:text-white ${isActive ? "bg-blue-500 text-white" : ""} text-base md:text-lg`
                   }

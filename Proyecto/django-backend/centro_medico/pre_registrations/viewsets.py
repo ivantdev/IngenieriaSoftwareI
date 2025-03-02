@@ -31,11 +31,11 @@ class PreRegistrationLimitedViewSet(
         id = self.request.query_params.get("id")
         id_number = self.request.query_params.get("id_number")
         if id:
-            queryset = queryset.filter(id=id, status=PreRegistration.PENDING)
+            queryset = queryset.filter(id=id, status=PreRegistration.STATUS_PENDING)
         if id_number:
             queryset = queryset.filter(
                 patient__id_number=id_number,
-                status=PreRegistration.PENDING,
+                status=PreRegistration.STATUS_PENDING,
             )
 
         return queryset

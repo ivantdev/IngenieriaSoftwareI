@@ -24,7 +24,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
         If no patient data is sent,
         it should throw validation error.
         """
-        data = {"status": PreRegistration.PENDING}
+        data = {"status": PreRegistration.STATUS_IN_PROGRESS}
         serializer = PreRegistrationCompleteSerializer(data=data)
         with self.assertRaises(ValidationError) as context:
             serializer.is_valid(raise_exception=True)
@@ -40,7 +40,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
         """
         data = {
             "patient": {"first_name": "Juan"},  # Missing other required fields
-            "status": PreRegistration.PENDING,
+            "status": PreRegistration.STATUS_IN_PROGRESS,
         }
         serializer = PreRegistrationCompleteSerializer(data=data)
         with self.assertRaises(ValidationError) as context:
@@ -70,7 +70,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
                 "last_name": "Gómez",
                 "contact_number": "987654321",  # missing relationship
             },
-            "status": PreRegistration.PENDING,
+            "status": PreRegistration.STATUS_IN_PROGRESS,
         }
         serializer = PreRegistrationCompleteSerializer(data=data)
         with self.assertRaises(ValidationError) as context:
@@ -87,7 +87,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
         """
         data = {
             "patient": {"id": self.existing_patient.id},
-            "status": PreRegistration.PENDING,
+            "status": PreRegistration.STATUS_IN_PROGRESS,
         }
         serializer = PreRegistrationCompleteSerializer(data=data)
         with self.assertRaises(ValidationError) as context:
@@ -105,7 +105,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
         """
         data = {
             "patient": {"id": self.existing_patient.id},
-            "status": PreRegistration.PENDING,
+            "status": PreRegistration.STATUS_IN_PROGRESS,
             "medical_info": {"reason": ""},
         }
         serializer = PreRegistrationCompleteSerializer(data=data)
@@ -127,7 +127,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
         }
         data = {
             "patient": {"id": self.existing_patient.id},
-            "status": PreRegistration.PENDING,
+            "status": PreRegistration.STATUS_IN_PROGRESS,
             "medical_info": medical_info_data,
         }
         serializer = PreRegistrationCompleteSerializer(data=data)
@@ -156,7 +156,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
         }
         data = {
             "patient": patient_data,
-            "status": PreRegistration.PENDING,
+            "status": PreRegistration.STATUS_IN_PROGRESS,
             "medical_info": medical_info_data,
         }
         serializer = PreRegistrationCompleteSerializer(data=data)
@@ -197,7 +197,7 @@ class PreRegistrationCompleteSerializerTests(TestCase):
             "patient": patient_data,
             "third_party": third_party_data,
             "medical_info": medical_info_data,
-            "status": PreRegistration.PENDING,
+            "status": PreRegistration.STATUS_IN_PROGRESS,
         }
         serializer = PreRegistrationCompleteSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
