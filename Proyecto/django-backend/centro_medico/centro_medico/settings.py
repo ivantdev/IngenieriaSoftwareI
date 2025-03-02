@@ -32,12 +32,10 @@ BACKEND_URL = env("BACKEND_URL")
 FRONTEND_URL = env("FRONTEND_URL")
 LANDING_URL = env("LANDING_URL")
 
+
 ALLOWED_HOSTS = [BACKEND_URL]
 CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, LANDING_URL, f"https://{BACKEND_URL}"]
-
-
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -140,16 +138,26 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "MinimumLengthValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "NumericPasswordValidator",
     },
 ]
 
@@ -192,8 +200,11 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_RENDERER_CLASSES": [
         "centro_medico.renderers.CustomJSONRenderer",
-    ]
-    + (["rest_framework.renderers.BrowsableAPIRenderer"] if DEBUG else []),
+    ] + (
+        ["rest_framework.renderers.BrowsableAPIRenderer"]
+        if DEBUG
+        else []
+    ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
