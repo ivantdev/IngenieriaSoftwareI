@@ -11,6 +11,7 @@ import Register from "@/pages/Register.jsx";
 import RecoveryPassword from "@/pages/RecoveryPassword.jsx";
 import GuidesProtocols from "@/pages/GuidesProtocols";
 import Stats from "@/pages/Stats";
+import NotificationsManagement from "@/pages/NotificationsManagement";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -21,6 +22,10 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<Stats />} />
             <Route path="patient-admission" element={<PatientAdmission />} />
             <Route path="guides-protocols" element={<GuidesProtocols />} />
+            <Route
+              path="notifications-management"
+              element={<NotificationsManagement />}
+            />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
