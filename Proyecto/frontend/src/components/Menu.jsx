@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useGlobalContext } from "@/hooks/useGlobalContext";
 import {
   Home,
   HelpCircle,
@@ -10,6 +9,9 @@ import {
   Bell,
   LogOut,
 } from "lucide-react";
+import useGlobalContext from "@/hooks/useGlobalContext";
+import { useNavigate } from "react-router";
+import { getCSRFToken } from "@/utils";
 
 const menuItems = [
   { path: "/", label: "Dashboard", icon: Home },
@@ -37,7 +39,35 @@ const menuItems = [
 ];
 
 function Menu({ closeMenu }) {
-  const { user } = useGlobalContext();
+  const { addToast, user, setUser, globalState } = useGlobalContext();
+  const navigate = useNavigate();
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${globalState.endpoint}/logout/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken(),
+        },
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setUser({
+          ...user,
+          name: null,
+          email: null,
+          isActiveSession: false,
+        });
+        navigate("/logout");
+      } else {
+        addToast("No se pudo cerrar sesión", "error");
+      }
+    } catch {
+      addToast("Error error cerrando sesión", "error");
+    }
+  };
   return (
     <div className="flex flex-col h-full p-4 bg-white">
       {/* User Info */}
@@ -89,7 +119,7 @@ function Menu({ closeMenu }) {
       <div className="mt-auto">
         <NavLink
           to="/logout"
-          onClick={closeMenu}
+          onClick={handleLogout}
           className="flex items-center gap-3 p-2 text-gray-800  hover:bg-gray-200 rounded-md w-full text-base md:text-lg lg:text-xl"
         >
           <LogOut className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />
