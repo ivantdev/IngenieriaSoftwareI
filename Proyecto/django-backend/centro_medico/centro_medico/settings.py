@@ -32,12 +32,10 @@ BACKEND_URL = env("BACKEND_URL")
 FRONTEND_URL = env("FRONTEND_URL")
 LANDING_URL = env("LANDING_URL")
 
+
 ALLOWED_HOSTS = [BACKEND_URL]
-CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, LANDING_URL]
-
-
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, LANDING_URL, f"https://{BACKEND_URL}"]
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -63,6 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -120,10 +119,16 @@ WSGI_APPLICATION = "centro_medico.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+DATABASE_URL = env("DATABASE_URL", default=None)
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": env("DATABASE_URL", default=BASE_DIR / "db.sqlite3"),
+        "ENGINE": (
+            "libsql.db.backends.sqlite3"
+            if DATABASE_URL
+            else "django.db.backends.sqlite3"
+        ),
+        "NAME": DATABASE_URL if DATABASE_URL else BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -133,16 +138,26 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "MinimumLengthValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "NumericPasswordValidator",
     },
 ]
 
@@ -162,7 +177,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATICFILES_DIRS = (
+    [os.path.join(BASE_DIR, "django_backend", "static")]
+    if os.path.exists(os.path.join(BASE_DIR, "django_backend", "static"))
+    else []
+)
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -175,8 +200,11 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_RENDERER_CLASSES": [
         "centro_medico.renderers.CustomJSONRenderer",
-    ]
-    + (["rest_framework.renderers.BrowsableAPIRenderer"] if DEBUG else []),
+    ] + (
+        ["rest_framework.renderers.BrowsableAPIRenderer"]
+        if DEBUG
+        else []
+    ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
@@ -207,6 +235,6 @@ STORAGES = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }

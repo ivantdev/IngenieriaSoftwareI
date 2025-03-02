@@ -38,12 +38,15 @@ class ThirdParty(models.Model):
 
 
 class PreRegistration(models.Model):
-    PENDING = "pending"
-    COMPLETED = "completed"
+    STATUS_PENDING = "pending"
+    STATUS_CANCELED = "canceled"
+    STATUS_IN_PROGRESS = "in_progress"
+    STATUS_COMPLETED = "completed"
     STATUS_CHOICES = [
         ("pending", "Pending"),
-        ("expired", "Expired"),
-        ("attended", "Attended"),
+        ("canceled", "Canceled"),
+        ("in_progress", "In progress"),
+        ("completed", "Completed"),
     ]
 
     patient = models.ForeignKey(
@@ -64,6 +67,7 @@ class PreRegistration(models.Model):
         related_name="pre_registrations",
         verbose_name="Third Party",
         null=True,
+        blank=True,
     )
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, verbose_name="Status"

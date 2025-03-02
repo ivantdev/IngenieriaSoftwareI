@@ -84,7 +84,7 @@ function AdmissionDetails({ onSubmit }) {
           onClick={handleSubmit}
           className="w-full py-2 px-4 bg-black text-white font-semibold rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
         >
-          Submit
+          Continuar
         </button>
       </div>
     </div>

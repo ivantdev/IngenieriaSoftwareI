@@ -11,7 +11,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       {/* Mobile Menu Button */}
       <button
         onClick={toggleMenu}
@@ -26,7 +26,7 @@ function Dashboard() {
 
       {/* Sidebar (Menu) */}
       <div
-        className={`fixed lg:relative inset-y-0 left-0 w-84 bg-sidebar-bg transform transition-transform duration-300 ease-in-out z-40 ${menuOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+        className={`fixed h-svh inset-y-0 left-0 top-0 w-84 bg-sidebar-bg transform transition-transform duration-300 ease-in-out z-40 ${menuOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       >
         <Menu closeMenu={toggleMenu} />
       </div>
@@ -42,7 +42,7 @@ function Dashboard() {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 p-4 mt-10">
+      <div className="flex-1 max-w-full p-4 lg:ml-84 max-h mt-10">
         <Outlet />
       </div>
     </div>

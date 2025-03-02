@@ -16,10 +16,16 @@ INSTALLED_APPS = [
     "shared.notifications",
 ]
 
+DATABASE_URL = env("DATABASE_URL", default=None)
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": env("DATABASE_URL", default=BASE_DIR / "db.sqlite3"),
+        "ENGINE": (
+            "libsql.db.backends.sqlite3"
+            if DATABASE_URL
+            else "django.db.backends.sqlite3"
+        ),
+        "NAME": DATABASE_URL if DATABASE_URL else BASE_DIR / "db.sqlite3",
     }
 }
 

@@ -10,6 +10,19 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // 🔹 Credenciales provisionales (modo desarrollo)
+    if (email === "test@demo.com" && password === "123456") {
+      setUser({
+        ...user,
+        name: "Usuario Demo",
+        email: "test@demo.com",
+        isActiveSession: true,
+      });
+      navigate("/");
+      return;
+    }
+
     try {
       const response = await fetch(`${globalState.endpoint}/login/`, {
         method: "POST",

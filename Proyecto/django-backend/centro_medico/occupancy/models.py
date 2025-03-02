@@ -76,7 +76,7 @@ class OccupancyHistory(models.Model):
 
     class Meta:
         verbose_name = "Occupancy History"
-        verbose_name_plural = "Occupancy Histories"
+        verbose_name_plural = "Occupancy History"
 
     def __str__(self):
         return f"{self.resource_type.resource_name} Occupancy: {self.occupancy_percentage}%"
