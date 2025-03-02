@@ -49,6 +49,7 @@ class OccupancyHistorySerializer(serializers.ModelSerializer):
     resource_type_id = serializers.PrimaryKeyRelatedField(
         queryset=ResourceType.objects.all(), source="resource_type", write_only=True
     )
+    occupancy_percentage = serializers.FloatField()
 
     class Meta:
         model = OccupancyHistory

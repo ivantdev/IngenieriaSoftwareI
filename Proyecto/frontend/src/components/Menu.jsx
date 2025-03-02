@@ -41,7 +41,7 @@ function Menu({ closeMenu }) {
   const { user, globalState } = useGlobalContext();
   menuItems[2].path = `${globalState.landing_url}/pre-registration`;
   return (
-    <div className="flex flex-col h-full p-4 bg-white">
+    <div className="flex h-screen flex-col p-4 bg-white">
       {/* User Info */}
       <div className="flex items-center gap-4 mb-8">
         <div className="relative w-16 h-16 rounded-full bg-primary-blue flex-shrink-0">
