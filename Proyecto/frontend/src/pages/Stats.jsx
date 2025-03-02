@@ -68,7 +68,7 @@ OccupancyChart.propTypes = {
 };
 
 export default function Stats() {
-  const { globalState, addToast } = useGlobalContext();
+  const { globalState, addToast, setUser } = useGlobalContext();
   const [systemData, setSystemData] = useState(null);
   const [timeRange, setTimeRange] = useState("7h"); // Default to 7 hours
 
@@ -76,6 +76,8 @@ export default function Stats() {
     const fetchDashboardData = async () => {
       const response = await fetchWithAuth(
         `${globalState.endpoint}/system-statistics/?period=${timeRange}`,
+        {},
+        setUser,
       );
       const data = await response.json();
       if (data.status === "success") {
@@ -85,7 +87,7 @@ export default function Stats() {
       }
     };
     fetchDashboardData();
-  }, [addToast, globalState.endpoint, setSystemData, timeRange]);
+  }, [addToast, globalState.endpoint, setSystemData, setUser, timeRange]);
 
   if (!systemData) return null;
   return (

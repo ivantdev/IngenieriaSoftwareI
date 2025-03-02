@@ -6,13 +6,13 @@ import AdmissionDetails from "@/components/Admission/AdmissionDetails";
 import AdmissionCompleted from "@/components/Admission/AdmissionCompleted";
 import useGlobalContext from "@/hooks/useGlobalContext";
 
-import { getCSRFToken } from "@/utils/";
+import { getCSRFToken, fetchWithAuth } from "@/utils/";
 
 function PatientAdmission() {
   const [step, setStep] = useState(0);
   const [preRegistrationData, setPreRegistrationData] = useState(null);
   const [admissionData, setAdmissionData] = useState(null);
-  const { globalState, addToast } = useGlobalContext();
+  const { globalState, addToast, setUser } = useGlobalContext();
 
   const successSearchPreRegistration = (data) => {
     setPreRegistrationData(data);
@@ -45,18 +45,16 @@ function PatientAdmission() {
   useEffect(() => {
     const postAdmission = async () => {
       try {
-        const response = await fetch(
-          `${globalState.endpoint}/patient-admissions/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": getCSRFToken(),
-            },
-            credentials: "include",
-            body: JSON.stringify(admissionData),
+        const url = `${globalState.endpoint}/patient-admissions/`;
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
           },
-        );
+          body: JSON.stringify(admissionData),
+        };
+        const response = await fetchWithAuth(url, options, setUser);
 
         if (!response.ok) {
           addToast(`Error al registrar la admisión`, "error");
