@@ -60,7 +60,7 @@ function ResourcesAssign({ onSubmit }) {
         }
 
         const data = await response.json();
-        if (data.status == "success") {
+        if (data.status === "success") {
           setResourceTypes(data.data);
         } else {
           addToast(`Error al cargar los recursos: ${data.message}`, "error");

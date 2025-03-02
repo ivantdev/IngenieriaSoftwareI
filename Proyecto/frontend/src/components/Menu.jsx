@@ -10,6 +10,8 @@ import {
   Bell,
   LogOut,
 } from "lucide-react";
+import { useNavigate } from "react-router";
+import { getCSRFToken } from "@/utils";
 
 const menuItems = [
   { path: "/", label: "Dashboard", icon: Home },
@@ -38,7 +40,35 @@ const menuItems = [
 ];
 
 function Menu({ closeMenu }) {
-  const { user, globalState } = useGlobalContext();
+  const { addToast, user, setUser, globalState } = useGlobalContext();
+  const navigate = useNavigate();
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${globalState.endpoint}/logout/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken(),
+        },
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setUser({
+          ...user,
+          name: null,
+          email: null,
+          isActiveSession: false,
+        });
+        navigate("/logout");
+      } else {
+        addToast("No se pudo cerrar sesión", "error");
+      }
+    } catch {
+      addToast("Error error cerrando sesión", "error");
+    }
+  };
   menuItems[2].path = `${globalState.landing_url}/pre-registration`;
   return (
     <div className="flex h-screen flex-col p-4 bg-white">
@@ -74,7 +104,6 @@ function Menu({ closeMenu }) {
                 <NavLink
                   to={item.path}
                   onClick={closeMenu}
-                  target={item.target || ""}
                   className={({ isActive }) =>
                     `flex items-center gap-4 p-2 pt-3 rounded-md text-gray-700 hover:bg-blue-500 hover:text-white ${isActive ? "bg-blue-500 text-white" : ""} text-base md:text-lg`
                   }
@@ -92,7 +121,7 @@ function Menu({ closeMenu }) {
       <div className="mt-auto">
         <NavLink
           to="/logout"
-          onClick={closeMenu}
+          onClick={handleLogout}
           className="flex items-center gap-3 p-2 text-gray-800  hover:bg-gray-200 rounded-md w-full text-base md:text-lg lg:text-xl"
         >
           <LogOut className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />
