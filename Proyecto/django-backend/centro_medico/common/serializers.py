@@ -7,6 +7,7 @@ from pre_registrations.models import (
 from patients.models import Patient, PatientAdmission
 from patients.serializers import PatientSerializer
 from occupancy.serializers import ResourceUsageSerializer
+from occupancy.models import ResourceUsage
 from pre_registrations.serializers import (
     PreRegistrationMedicalInfoSerializer,
     ThirdPartySerializer,
@@ -178,15 +179,19 @@ class PatientAdmissionSerializer(serializers.ModelSerializer):
             )
         return data
 
+    def to_internal_value(self, data):
+        resource_usages_data = data.pop("resource_usage", [])
+        validated_data = super().to_internal_value(data)
+        validated_data["resource_usage"] = resource_usages_data
+        return validated_data
+
     def create(self, validated_data):
-        resource_usages_data = validated_data.pop("resource_usages", [])
+        resource_usages_data = validated_data.pop("resource_usage", [])
         admission = super().create(validated_data)
         for usage_data in resource_usages_data:
-            from occupancy.models import ResourceUsage
-
             ResourceUsage.objects.create(admission=admission, **usage_data)
 
         pre_registration = admission.pre_registration
-        pre_registration.status = PreRegistration.COMPLETED
+        pre_registration.status = PreRegistration.STATUS_IN_PROGRESS
         pre_registration.save()
         return admission

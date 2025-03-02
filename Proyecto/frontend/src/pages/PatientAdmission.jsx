@@ -69,7 +69,6 @@ function PatientAdmission() {
           addToast("Admisión registrada exitosamente", "success");
           setAdmissionData(data.data);
           setStep(5);
-          console.log(data.data);
         } else {
           addToast(`Error al registrar la admisión: ${data.message}`, "error");
           setStep(3);
@@ -81,7 +80,6 @@ function PatientAdmission() {
     };
 
     if (step == 4) {
-      console.log(admissionData);
       postAdmission();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
