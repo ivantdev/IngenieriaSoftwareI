@@ -35,4 +35,6 @@ ENV AWS_S3_ENDPOINT_URL=$AWS_S3_ENDPOINT_URL
 ENV RUN_TASKS=$RUN_TASKS
 ENV OCCUPANCY_RECORD_INTERVAL=$OCCUPANCY_RECORD_INTERVAL
 
+RUN mkdir static media
+RUN python manage.py collectstatic --noinput
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -33,7 +33,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 LANDING_URL = env("LANDING_URL")
 
 ALLOWED_HOSTS = [BACKEND_URL]
-CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, LANDING_URL]
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL, LANDING_URL, f"https://{BACKEND_URL}"]
 
 
 # Application definition
@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -168,7 +169,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATICFILES_DIRS = (
+    [os.path.join(BASE_DIR, "django_backend", "static")]
+    if os.path.exists(os.path.join(BASE_DIR, "django_backend", "static"))
+    else []
+)
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -213,6 +224,6 @@ STORAGES = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
