@@ -1,5 +1,19 @@
 from rest_framework import serializers
-from .models import Patient
+from .models import Patient, PatientAdmission
+
+
+class PatientAdmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientAdmission
+        fields = [
+            "admission_date",
+            "discharge_date",
+            "admission_type",
+            "triage_level",
+            "admission_notes",
+            "discharge_type",
+            "discharge_notes",
+        ]
 
 
 class PatientSerializer(serializers.ModelSerializer):
