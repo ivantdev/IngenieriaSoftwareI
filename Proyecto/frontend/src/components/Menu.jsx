@@ -104,6 +104,7 @@ function Menu({ closeMenu }) {
                 <NavLink
                   to={item.path}
                   onClick={closeMenu}
+                  target={item.target}
                   className={({ isActive }) =>
                     `flex items-center gap-4 p-2 pt-3 rounded-md text-gray-700 hover:bg-blue-500 hover:text-white ${isActive ? "bg-blue-500 text-white" : ""} text-base md:text-lg`
                   }
