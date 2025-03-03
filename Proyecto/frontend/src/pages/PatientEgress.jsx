@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "@/styles/PatientEgress.css"; // Importamos el archivo CSS
 import { getCSRFToken } from "@/utils/";
+import useGlobalContext from "@/hooks/useGlobalContext";
+
 
 const PatientEgress = () => {
   const [searchType, setSearchType] = useState("id_number");
@@ -14,20 +16,24 @@ const PatientEgress = () => {
     new Date().toISOString().split("T")[0],
   );
   const [step, setStep] = useState(1);
+  const { globalState, addToast, setUser } = useGlobalContext();
+
 
   useEffect(() => {
     const fetchAdmissions = async () => {
       console.log("🚀 Ejecutando fetchAdmissions..."); // 🔍 Verifica si se ejecuta
 
-      const url = "http://127.0.0.1:8000/api/patient-admissions/";
+      const url = `${globalState.endpoint}/patient-admissions/`;
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken(),
+        },
+      };
       try {
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken(),
-          },
-        });
+        const response = await fetchWithAuth(url, options, setUser);
+
 
         console.log("📌 Respuesta recibida:", response); // Verifica si hay respuesta
 
@@ -118,16 +124,16 @@ const PatientEgress = () => {
     console.log("📌 Datos enviados:", updatedAdmission);
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/patient-admissions/${selectedAdmission.id}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const url = `${globalState.endpoint}/patient-admissions/`;
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken(),
           body: JSON.stringify(updatedAdmission),
         },
-      );
+      };
+      const response = await fetchWithAuth(url, options, setUser);
 
       const data = await response.json();
       console.log("📌 Respuesta del servidor:", data);
@@ -140,10 +146,10 @@ const PatientEgress = () => {
           prevAdmissions.map((admission) =>
             admission.id === selectedAdmission.id
               ? {
-                  ...admission,
-                  ...updatedAdmission,
-                  updated_at: new Date().toISOString(),
-                }
+                ...admission,
+                ...updatedAdmission,
+                updated_at: new Date().toISOString(),
+              }
               : admission,
           ),
         );
