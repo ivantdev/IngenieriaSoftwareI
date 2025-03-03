@@ -124,7 +124,7 @@ const PatientEgress = () => {
     try {
       const url = `${globalState.endpoint}/patient-admissions/`;
       const options = {
-        method: "GET",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": getCSRFToken(),
