@@ -5,8 +5,8 @@ import { fetchWithAuth, getCSRFToken } from "@/utils";
 function NotificationsManagement() {
   const { globalState, addToast, setUser } = useGlobalContext();
   const [type, setType] = useState("email"); // email o telegram
-  const [recipients, setRecipients] = useState([]);
-  const [users, setUsers] = useState([]); // Lista de usuarios
+  const [recipients, setRecipients] = useState([]); // Lista de IDs seleccionados
+  const [users, setUsers] = useState([]); // Lista de usuarios disponibles
   const [title, setTitle] = useState(""); // Título / Asunto
   const [text, setText] = useState(""); // Mensaje
   const [step, setStep] = useState(0);
@@ -37,27 +37,26 @@ function NotificationsManagement() {
   // Enviar notificación
   useEffect(() => {
     const postNotification = async () => {
+      if (!notificationData) return;
       try {
-        if (!notificationData) return;
-
         console.log(
           "🔗 Enviando notificación a:",
           `${globalState.endpoint}/notifications/`,
         );
-
-        const url = `${globalState.endpoint}/notifications/`;
-        const options = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken(),
+        const response = await fetchWithAuth(
+          `${globalState.endpoint}/notifications/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken(),
+            },
+            body: JSON.stringify(notificationData),
           },
-          body: JSON.stringify(notificationData),
-        };
+          setUser,
+        );
 
-        const response = await fetchWithAuth(url, options, setUser);
         const data = await response.json();
-
         if (!response.ok) {
           console.error("❌ Error en la respuesta:", data);
           addToast(data.message || "Error al enviar la notificación", "error");
@@ -78,8 +77,26 @@ function NotificationsManagement() {
     }
   }, [step, notificationData, globalState.endpoint, setUser, addToast]);
 
+  // Manejar selección de múltiples destinatarios y removerlos de la lista
+  const handleRecipientsChange = (e) => {
+    const selectedOptions = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value,
+    );
+    setRecipients((prevRecipients) => [...prevRecipients, ...selectedOptions]);
+  };
+
+  // Manejar eliminación de destinatarios seleccionados y devolverlos a la lista
+  const handleRemoveRecipient = (id) => {
+    setRecipients((prevRecipients) => prevRecipients.filter((r) => r !== id));
+  };
+
   const handleNotificationSubmission = (e) => {
     e.preventDefault();
+    if (recipients.length === 0) {
+      addToast("Selecciona al menos un destinatario", "error");
+      return;
+    }
 
     const selectedRecipients = recipients.map((id) => parseInt(id, 10));
 
@@ -102,6 +119,13 @@ function NotificationsManagement() {
     setNotificationData(newNotification);
     setStep(1);
   };
+
+  // Filtrar usuarios que ya han sido seleccionados
+  const availableUsers = users.filter(
+    (user) =>
+      !recipients.includes(user.id.toString()) &&
+      (type === "email" ? user.email : user.telegram_id),
+  );
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
@@ -130,25 +154,14 @@ function NotificationsManagement() {
             <select
               multiple
               value={recipients}
-              onChange={(e) =>
-                setRecipients(
-                  Array.from(
-                    e.target.selectedOptions,
-                    (option) => option.value,
-                  ),
-                )
-              }
+              onChange={handleRecipientsChange}
               className="w-full p-3 border rounded"
             >
-              {users
-                .filter((user) =>
-                  type === "email" ? user.email : user.telegram_id,
-                )
-                .map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.username} ({type === "email" ? "Email" : "Telegram"})
-                  </option>
-                ))}
+              {availableUsers.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.username} ({type === "email" ? "Email" : "Telegram"})
+                </option>
+              ))}
             </select>
           </div>
 
@@ -157,7 +170,7 @@ function NotificationsManagement() {
             <label className="block font-semibold">Seleccionados:</label>
             <div className="flex flex-wrap gap-2">
               {recipients.map((id) => {
-                const user = users.find((u) => u.id === parseInt(id, 10));
+                const user = users.find((u) => u.id.toString() === id);
                 return user ? (
                   <div
                     key={id}
@@ -167,9 +180,7 @@ function NotificationsManagement() {
                     <button
                       type="button"
                       className="ml-2 text-red-500"
-                      onClick={() =>
-                        setRecipients(recipients.filter((r) => r !== id))
-                      }
+                      onClick={() => handleRemoveRecipient(id)}
                     >
                       ✖
                     </button>
