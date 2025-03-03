@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import "@/styles/PatientEgress.css"; // Importamos el archivo CSS
-import { getCSRFToken } from "@/utils/";
+import { getCSRFToken, fetchWithAuth } from "@/utils/";
 import useGlobalContext from "@/hooks/useGlobalContext";
-
 
 const PatientEgress = () => {
   const [searchType, setSearchType] = useState("id_number");
@@ -17,7 +16,6 @@ const PatientEgress = () => {
   );
   const [step, setStep] = useState(1);
   const { globalState, addToast, setUser } = useGlobalContext();
-
 
   useEffect(() => {
     const fetchAdmissions = async () => {
@@ -34,7 +32,6 @@ const PatientEgress = () => {
       try {
         const response = await fetchWithAuth(url, options, setUser);
 
-
         console.log("📌 Respuesta recibida:", response); // Verifica si hay respuesta
 
         const data = await response.json();
@@ -42,6 +39,7 @@ const PatientEgress = () => {
 
         if (data.status === "success") {
           setAdmissions(data.data);
+          addToast("✅ Admisiones cargadas correctamente.", "success");
         } else {
           console.error("⚠️ Error en la respuesta del servidor:", data);
         }
@@ -146,10 +144,10 @@ const PatientEgress = () => {
           prevAdmissions.map((admission) =>
             admission.id === selectedAdmission.id
               ? {
-                ...admission,
-                ...updatedAdmission,
-                updated_at: new Date().toISOString(),
-              }
+                  ...admission,
+                  ...updatedAdmission,
+                  updated_at: new Date().toISOString(),
+                }
               : admission,
           ),
         );
