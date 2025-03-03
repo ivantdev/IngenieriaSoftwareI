@@ -128,8 +128,8 @@ const PatientEgress = () => {
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": getCSRFToken(),
-          body: JSON.stringify(updatedAdmission),
         },
+        body: JSON.stringify(updatedAdmission),
       };
       const response = await fetchWithAuth(url, options, setUser);
 
@@ -144,10 +144,10 @@ const PatientEgress = () => {
           prevAdmissions.map((admission) =>
             admission.id === selectedAdmission.id
               ? {
-                  ...admission,
-                  ...updatedAdmission,
-                  updated_at: new Date().toISOString(),
-                }
+                ...admission,
+                ...updatedAdmission,
+                updated_at: new Date().toISOString(),
+              }
               : admission,
           ),
         );
