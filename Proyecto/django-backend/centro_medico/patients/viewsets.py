@@ -1,5 +1,6 @@
 from rest_framework import mixins, viewsets
 from .models import PatientAdmission
+from rest_framework.permissions import IsAuthenticated
 from common.serializers import PatientAdmissionSerializer
 from .models import Patient
 from .serializers import PatientQuerySerializer
@@ -22,6 +23,7 @@ class PatientAdmissionViewSet(
 
     queryset = PatientAdmission.objects.all()
     serializer_class = PatientAdmissionSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class PatientQueryViewSet(
