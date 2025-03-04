@@ -10,6 +10,7 @@ from channels.base import NotificationChannelStrategy
 from pathlib import Path
 from django.db.models.query import QuerySet
 from typing import List, Dict, Any, Optional, NoReturn, Type
+from django.db import connection, DatabaseError
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -129,37 +130,56 @@ class Consumer:
     def run(self) -> NoReturn:
         """Main consumer loop."""
         while True:
-            self.logger.info("Checking for pending notifications...")
-            pending_notifications: QuerySet[Notification] = Notification.objects.filter(
-                status="pending", attempts__lt=5
-            )
+            try:
+                self.logger.info("Checking for pending notifications...")
 
-            for notification in pending_notifications:
-                notification.attempts += 1
-                try:
-                    success = self.process_notification(notification)
-                    if success:
-                        notification.status = "sent"
-                    elif notification.attempts >= 5:
-                        self.logger.error(
-                            "Notification %s reached 5 attempts. Marking as failed.",
-                            notification.id,
-                        )
-                        notification.status = "failed"
-                except Exception:
-                    self.logger.exception(
-                        "Error processing notification %s", notification.id
+                if connection.connection and not connection.is_usable():
+                    self.logger.warning(
+                        "Database connection is not usable, reconnecting..."
                     )
-                    if notification.attempts >= 5:
-                        self.logger.error(
-                            "Notification %s reached 5 attempts. Marking as failed.",
-                            notification.id,
-                        )
-                        notification.status = "failed"
-                finally:
-                    notification.save()
+                    connection.close()
 
-            time.sleep(self.poll_interval)
+                pending_notifications: QuerySet[Notification] = (
+                    Notification.objects.filter(status="pending", attempts__lt=5)
+                )
+
+                for notification in pending_notifications:
+                    notification.attempts += 1
+                    try:
+                        success = self.process_notification(notification)
+                        if success:
+                            notification.status = "sent"
+                        elif notification.attempts >= 5:
+                            self.logger.error(
+                                "Notification %s reached 5 attempts. Marking as failed.",
+                                notification.id,
+                            )
+                            notification.status = "failed"
+                    except Exception:
+                        self.logger.exception(
+                            "Error processing notification %s", notification.id
+                        )
+                        if notification.attempts >= 5:
+                            self.logger.error(
+                                "Notification %s reached 5 attempts. Marking as failed.",
+                                notification.id,
+                            )
+                            notification.status = "failed"
+                    finally:
+                        notification.save()
+
+                time.sleep(self.poll_interval)
+            except DatabaseError as e:
+                self.logger.error("Database error occurred: %s", e)
+                self.logger.info(
+                    "Closing and reconnecting to the database in 5 seconds..."
+                )
+                connection.close()
+                time.sleep(5)
+                continue
+            except Exception as e:
+                self.logger.exception("Error in consumer loop: %s", e)
+                continue
 
 
 if __name__ == "__main__":

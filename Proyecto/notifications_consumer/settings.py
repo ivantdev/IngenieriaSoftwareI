@@ -26,6 +26,7 @@ DATABASES = {
             else "django.db.backends.sqlite3"
         ),
         "NAME": DATABASE_URL if DATABASE_URL else BASE_DIR / "db.sqlite3",
+        "CONN_MAX_AGE": 300,
     }
 }
 
