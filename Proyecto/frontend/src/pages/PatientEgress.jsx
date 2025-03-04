@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "@/styles/PatientEgress.css"; // Importamos el archivo CSS
-import { getCSRFToken } from "@/utils/";
+import { getCSRFToken, fetchWithAuth } from "@/utils/";
+import useGlobalContext from "@/hooks/useGlobalContext";
 
 const PatientEgress = () => {
   const [searchType, setSearchType] = useState("id_number");
@@ -14,38 +15,35 @@ const PatientEgress = () => {
     new Date().toISOString().split("T")[0],
   );
   const [step, setStep] = useState(1);
+  const { globalState, addToast, setUser } = useGlobalContext();
 
   useEffect(() => {
     const fetchAdmissions = async () => {
-      console.log("🚀 Ejecutando fetchAdmissions..."); // 🔍 Verifica si se ejecuta
-
-      const url = "http://127.0.0.1:8000/api/patient-admissions/";
       try {
-        const response = await fetch(url, {
+        const url = `${globalState.endpoint}/patient-admissions/`;
+        const options = {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": getCSRFToken(),
           },
-        });
-
-        console.log("📌 Respuesta recibida:", response); // Verifica si hay respuesta
-
+        };
+        const response = await fetchWithAuth(url, options, setUser);
         const data = await response.json();
-        console.log("📌 Datos recibidos:", data); // Verifica si hay datos
 
         if (data.status === "success") {
           setAdmissions(data.data);
+          addToast("✅ Admisiones cargadas correctamente.", "success");
         } else {
-          console.error("⚠️ Error en la respuesta del servidor:", data);
+          addToast(`⚠️ Error en la respuesta del servidor: ${data}`, "error");
         }
       } catch (error) {
-        console.error("❌ Error al obtener las admisiones:", error);
+        addToast(`❌ Error al obtener las admisiones: ${error}`, "error");
       }
     };
 
     fetchAdmissions();
-  }, []);
+  }, [addToast, globalState.endpoint, setUser]);
 
   useEffect(() => {
     if (searchValue.trim() === "") {
@@ -61,28 +59,11 @@ const PatientEgress = () => {
       }
 
       const patient = admission.pre_registration.patient;
-
-      // 📌 Agregamos estos console.log para depuración
       const fieldToSearch = patient[searchType]?.toString().toLowerCase();
-      console.log(
-        `🔍 Buscando en campo: "${searchType}", valor en datos: "${fieldToSearch}"`,
-      );
-      console.log(
-        `🔍 Valor ingresado por usuario: "${searchValue.toLowerCase()}"`,
-      );
-
       const inputValue = searchValue.toLowerCase();
 
       return fieldToSearch?.includes(inputValue);
     });
-
-    console.log("✅ Pacientes filtrados:", filtered);
-
-    console.log("✅ Admisiones después del filtro:", filtered);
-
-    console.log("✅ Pacientes filtrados:", filtered);
-
-    console.log("Pacientes filtrados:", filtered); // 🔹 Verifica si encuentra pacientes
     setFilteredAdmissions(filtered);
   }, [searchValue, searchType, admissions]);
 
@@ -93,12 +74,12 @@ const PatientEgress = () => {
 
   const handleDischarge = async () => {
     if (!dischargeType.trim() || !dischargeNotes.trim()) {
-      alert("❌ Todos los campos son obligatorios.");
+      addToast("❌ Todos los campos son obligatorios.", "error");
       return;
     }
 
     if (!selectedAdmission || !selectedAdmission.id) {
-      console.error("❌ No hay una admisión seleccionada.");
+      addToast("❌ Todos los campos son obligatorios.", "error");
       return;
     }
 
@@ -118,22 +99,21 @@ const PatientEgress = () => {
     console.log("📌 Datos enviados:", updatedAdmission);
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/patient-admissions/${selectedAdmission.id}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedAdmission),
+      const url = `${globalState.endpoint}/patient-admissions/${selectedAdmission.id}/`;
+      const options = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken(),
         },
-      );
+        body: JSON.stringify(updatedAdmission),
+      };
+      const response = await fetchWithAuth(url, options, setUser);
 
       const data = await response.json();
-      console.log("📌 Respuesta del servidor:", data);
 
       if (response.ok) {
-        alert("✅ Paciente dado de alta correctamente.");
+        addToast("✅ Paciente dado de alta correctamente.", "success");
 
         // 🔹 Actualizar estado local para reflejar el alta sin recargar la página
         setAdmissions((prevAdmissions) =>
@@ -150,10 +130,10 @@ const PatientEgress = () => {
 
         setStep(3);
       } else {
-        console.error("❌ Error en la respuesta del servidor:", data);
+        addToast(`❌ Error en la respuesta del servidor:", ${data}`, "error");
       }
     } catch (error) {
-      console.error("❌ Error de conexión:", error);
+      addToast(`❌ Error de conexión:", ${error}`, "error");
     }
   };
 
