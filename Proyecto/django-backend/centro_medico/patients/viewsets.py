@@ -49,8 +49,7 @@ class PatientQueryViewSet(
         if provided in query parameters.
         """
         queryset = super().get_queryset()
-        id_type = self.request.query_params.get("id_type")
         id_number = self.request.query_params.get("id_number")
-        if id_type and id_number:
-            queryset = queryset.filter(id_type=id_type, id_number=id_number)
+        if id_number:
+            queryset = queryset.filter(id_number=id_number)
         return queryset

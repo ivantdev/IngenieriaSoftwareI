@@ -72,9 +72,7 @@ function PatientAdmission({ onSuccess }) {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="id">Código de pre-registro</option>
-            <option value="patient-id__number-id">
-              Número de identificación
-            </option>
+            <option value="id_number">Número de identificación</option>
           </select>
         </div>
 
