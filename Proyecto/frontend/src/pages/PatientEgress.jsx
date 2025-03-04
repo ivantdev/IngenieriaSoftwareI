@@ -122,7 +122,7 @@ const PatientEgress = () => {
     console.log("📌 Datos enviados:", updatedAdmission);
 
     try {
-      const url = `${globalState.endpoint}/patient-admissions/`;
+      const url = `${globalState.endpoint}/patient-admissions/${selectedAdmission.id}/`;
       const options = {
         method: "PUT",
         headers: {
