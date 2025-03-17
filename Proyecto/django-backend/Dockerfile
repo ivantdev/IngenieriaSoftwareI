@@ -39,4 +39,4 @@ ENV DOMAIN=$DOMAIN
 
 RUN mkdir static media
 RUN python manage.py collectstatic --noinput
-CMD ["gunicorn ", "--bind", "0.0.0.0:8000", "centro_medico.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "centro_medico.wsgi"]
